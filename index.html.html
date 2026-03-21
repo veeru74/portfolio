@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en" style="--hi: #2a7f62;"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veerendra Sai Yelubandi — Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&amp;family=DM+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --card:#f0ede6;
+  --border:#e2ddd6;
+  --accent:#1c2b3a;
+  --hi:#2a7f62;
+  --hi2:#e8a838;
+  --text:#1a1a1a;
+  --muted:#8a8580;
+  --ink:#2d2d2d;
+  --subtle:#ede9e1;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* ─── EDIT BAR ─── */
+.ebar{position:fixed;top:0;left:0;right:0;z-index:1000;background:#0e1e2b;border-bottom:2px solid var(--hi);display:flex;align-items:center;gap:10px;padding:8px 24px;transition:transform .3s}
+.ebar.hidden{transform:translateY(-100%)}
+.ebadge{background:var(--hi);color:#fff;border-radius:20px;padding:2px 12px;font-size:10px;font-weight:700;letter-spacing:1px}
+.ehint{color:#6b8a7a;font-size:12px;font-style:italic}
+.ebtn{border:none;border-radius:4px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer}
+.ebtn-manage{background:var(--hi);color:#fff;margin-left:auto}
+.ebtn-save{background:var(--hi2);color:#1c2b3a}
+.ebtn-exit{background:transparent;color:#6b8a7a;border:1px solid #2d4a3a}
+body.em [contenteditable]:not(.panel *){outline:1.5px dashed rgba(42,127,98,.35);border-radius:2px;cursor:text;transition:all .15s}
+body.em [contenteditable]:not(.panel *):hover{outline-color:var(--hi);background:rgba(42,127,98,.05)}
+body.em [contenteditable]:not(.panel *):focus{outline:1.5px solid var(--hi);background:rgba(42,127,98,.07)}
+
+/* ─── SIDE PANEL ─── */
+.panel{position:fixed;right:0;top:0;bottom:0;width:360px;background:#fff;border-left:1px solid var(--border);z-index:900;transform:translateX(110%);transition:transform .3s;overflow-y:auto;padding:64px 20px 24px;box-shadow:-12px 0 40px rgba(0,0,0,.08);pointer-events:auto;user-select:text;-webkit-user-select:text}
+.panel.open{transform:translateX(0)}
+.pt{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);margin-bottom:4px}
+.ps{font-size:12px;color:var(--muted);margin-bottom:20px}
+.psec{margin-bottom:24px}
+.psec-hd{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.pi{background:var(--card);border-radius:6px;padding:10px;margin-bottom:8px}
+.prow{display:flex;gap:6px;margin-bottom:5px;align-items:center}
+.prow input,.prow textarea,.pi > input,.pi > textarea{width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;transition:border .15s;cursor:text;user-select:text;-webkit-user-select:text;pointer-events:auto}
+.prow input{flex:1}
+.prow input:focus,.pi > input:focus,.pi > textarea:focus{border-color:var(--hi);background:#fafffe}
+.pi > textarea{resize:vertical;min-height:60px;line-height:1.5;margin-top:4px}
+.pdel{background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;flex-shrink:0;padding:0 4px}
+.pdel:hover{color:#e05252}
+.padd{width:100%;background:#fff;border:1.5px dashed var(--border);border-radius:4px;padding:8px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;margin-top:4px;transition:all .15s}
+.padd:hover{border-color:var(--hi);color:var(--hi)}
+.swatches{display:flex;gap:9px;flex-wrap:wrap}
+.sw{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:border .15s}
+.sw.on{border-color:var(--accent)}
+.pbtns{display:flex;gap:8px;margin-top:16px}
+.pb1{flex:1;background:var(--accent);color:#fff;border:none;border-radius:4px;padding:10px;font-size:13px;font-weight:600;cursor:pointer}
+.pb2{flex:1;background:var(--card);color:var(--muted);border:none;border-radius:4px;padding:10px;font-size:13px;cursor:pointer}
+
+/* ─── NAV ─── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:22px 64px;background:transparent;transition:all .4s}
+nav.sc{padding:13px 64px;background:rgba(247,246,242,.95);border-bottom:1px solid var(--border);backdrop-filter:blur(8px)}
+.nlogo{font-family:'DM Serif Display',serif;font-size:18px;color:var(--accent);letter-spacing:.5px}
+.nlinks{display:flex;gap:32px;list-style:none}
+.nlinks a{color:var(--muted);text-decoration:none;font-size:12px;font-weight:500;letter-spacing:.5px;transition:color .2s}
+.nlinks a:hover{color:var(--text)}
+.ncta{background:var(--accent);color:#fff;border:none;border-radius:3px;padding:8px 20px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:all .2s}
+.ncta:hover{background:#2a3f52}
+
+/* ─── HERO ─── */
+#hero{min-height:100vh;display:flex;align-items:flex-end;padding:0 64px 80px;position:relative;overflow:hidden;background:var(--bg)}
+.hero-bg-num{position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'DM Serif Display',serif;font-size:clamp(200px,25vw,340px);color:rgba(42,127,98,.05);line-height:1;pointer-events:none;user-select:none}
+.hero-inner{position:relative;z-index:1;width:100%;padding-top:160px}
+.hero-ey{display:inline-flex;align-items:center;gap:12px;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:28px}
+.hero-ey-dot{width:24px;height:1px;background:var(--hi)}
+.hero-name{font-family:'DM Serif Display',serif;font-size:clamp(52px,9vw,96px);line-height:.95;color:var(--accent);letter-spacing:-2px;margin-bottom:28px}
+.hero-name .ital{font-style:italic;color:var(--hi)}
+.hero-role{font-size:clamp(15px,2vw,19px);font-weight:300;color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:48px}
+.hero-role strong{color:var(--text);font-weight:500}
+.hbtns{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.btn-solid{background:var(--accent);color:#fff;border:none;border-radius:3px;padding:13px 32px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-solid:hover{background:#2a3f52;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--accent);border:1.5px solid var(--border);border-radius:3px;padding:13px 32px;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:.3px;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-ghost:hover{border-color:var(--accent);background:rgba(28,43,58,.04)}
+.hero-bottom{display:flex;align-items:flex-end;justify-content:space-between;margin-top:80px;padding-top:40px;border-top:1px solid var(--border)}
+.hstats{display:flex;gap:60px}
+.hstat-n{font-family:'DM Serif Display',serif;font-size:44px;color:var(--accent);line-height:1}
+.hstat-l{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.5px}
+.hero-scroll{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:10px;letter-spacing:2.5px;text-transform:uppercase}
+.scroll-bar{width:1px;height:48px;background:linear-gradient(to bottom,var(--muted),transparent);animation:sba 2s ease-in-out infinite}
+@keyframes sba{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* ─── SHARED ─── */
+.wrap{max-width:1100px;margin:0 auto;padding:96px 64px}
+.stag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--hi);margin-bottom:10px}
+.stitle{font-family:'DM Serif Display',serif;font-size:clamp(34px,5vw,54px);line-height:1.05;color:var(--accent);margin-bottom:14px}
+.ssub{font-size:15px;color:var(--muted);max-width:480px;margin-bottom:56px;font-weight:300;line-height:1.7}
+.divider{height:1px;background:var(--border);max-width:1200px;margin:0 auto}
+
+/* ─── ABOUT ─── */
+.about-g{display:grid;grid-template-columns:1.1fr .9fr;gap:80px;align-items:start}
+.about-text p{font-size:15px;color:var(--ink);line-height:1.9;margin-bottom:18px;font-weight:300}
+.akv{margin-top:36px}
+.akvr{display:flex;padding:11px 0;border-bottom:1px solid var(--border)}
+.akvk{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;width:130px;flex-shrink:0}
+.akvv{font-size:13px;color:var(--ink);font-weight:500}
+.photo-frame{aspect-ratio:3/4;background:var(--subtle);border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);position:sticky;top:120px;transition:box-shadow .3s}
+.photo-frame:hover{box-shadow:0 16px 56px rgba(0,0,0,.1)}
+.phph{text-align:center;color:var(--muted)}
+.phph span.i{font-size:44px;display:block;margin-bottom:8px;opacity:.25}
+.phph span.t{font-size:11px;letter-spacing:1px;text-transform:uppercase}
+
+/* ─── SKILLS ─── */
+.skills-g{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);overflow:hidden;border-radius:3px}
+.sc{background:var(--surface);padding:32px 28px;transition:background .2s}
+.sc:hover{background:var(--subtle)}
+.sc-cat{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--hi);margin-bottom:6px}
+.sc-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);margin-bottom:18px;line-height:1.2}
+.slist{display:flex;flex-direction:column;gap:9px}
+.sr{display:flex;align-items:center;gap:10px}
+.sr-dot{width:3px;height:3px;border-radius:50%;background:var(--hi);flex-shrink:0}
+.sr-name{font-size:13px;color:var(--ink);font-weight:400}
+
+/* ─── EXPERIENCE ─── */
+.exp-list{display:flex;flex-direction:column}
+.exp-item{display:grid;grid-template-columns:180px 1fr;gap:40px;padding:40px 0;border-bottom:1px solid var(--border)}
+.exp-item:first-child{border-top:1px solid var(--border)}
+.em-period{font-size:11px;color:var(--hi);font-weight:600;letter-spacing:.5px;margin-bottom:5px}
+.em-company{font-size:12px;color:var(--muted);line-height:1.5}
+.er-role{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);margin-bottom:10px;line-height:1.15}
+.er-desc{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:14px;font-weight:300}
+.etags{display:flex;flex-wrap:wrap;gap:7px}
+.etag{background:var(--subtle);color:var(--ink);border-radius:2px;padding:3px 10px;font-size:11px;letter-spacing:.3px}
+
+/* ─── PROJECTS ─── */
+.proj-g{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.pc{background:var(--surface);padding:36px;position:relative;transition:background .2s;group:true}
+.pc:hover{background:var(--subtle)}
+.pc-num{font-family:'DM Serif Display',serif;font-size:12px;color:var(--muted);margin-bottom:16px;letter-spacing:1px}
+.pc-cat{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--hi);margin-bottom:6px}
+.pc-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);margin-bottom:10px;line-height:1.2}
+.pc-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;font-weight:300}
+.ptags{display:flex;flex-wrap:wrap;gap:7px}
+.ptag{background:var(--subtle);color:var(--ink);border-radius:2px;padding:2px 9px;font-size:11px}
+.pc-arrow{position:absolute;top:32px;right:32px;color:var(--border);font-size:18px;transition:all .2s}
+.pc:hover .pc-arrow{color:var(--hi);transform:translate(3px,-3px)}
+
+/* ─── RESUME ─── */
+.res-g{display:grid;grid-template-columns:1fr 1fr;gap:72px;margin-top:52px}
+.res-col h3{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:28px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.ri{margin-bottom:28px}
+.ri-yr{font-size:11px;color:var(--hi);font-weight:600;margin-bottom:3px;letter-spacing:.5px}
+.ri-title{font-family:'DM Serif Display',serif;font-size:19px;color:var(--accent);margin-bottom:2px;line-height:1.2}
+.ri-place{font-size:12px;color:var(--muted);font-weight:300}
+.dl{display:inline-flex;align-items:center;gap:10px;margin-top:40px;background:var(--accent);color:#fff;border:none;border-radius:3px;padding:13px 26px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.3px;text-decoration:none;transition:all .2s}
+.dl:hover{background:#2a3f52;transform:translateY(-1px)}
+
+/* ─── CONTACT ─── */
+.ct-g{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.ct-email{font-family:'DM Serif Display',serif;font-size:clamp(20px,3.5vw,34px);color:var(--accent);margin:12px 0 28px;word-break:break-word;line-height:1.2}
+.clinks{display:flex;flex-direction:column}
+.cl{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);text-decoration:none;color:var(--ink);transition:color .15s}
+.cl:first-child{border-top:1px solid var(--border)}
+.cl:hover{color:var(--hi)}
+.cl:hover .cl-arr{transform:translate(4px,-4px)}
+.cl-lbl{font-size:14px;font-weight:500}
+.cl-arr{color:var(--muted);transition:transform .2s;font-size:16px}
+
+/* ─── FOOTER ─── */
+footer{text-align:center;padding:36px 24px;border-top:1px solid var(--border);color:var(--muted);font-size:11px;letter-spacing:.5px;background:var(--bg)}
+
+/* ─── REVEAL ─── */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+
+/* ─── FLOAT BTN ─── */
+#fab{position:fixed;bottom:28px;right:28px;z-index:800;background:var(--accent);color:#fff;border:none;border-radius:3px;padding:11px 20px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.3px;box-shadow:0 8px 28px rgba(28,43,58,.25);transition:all .2s}
+#fab:hover{background:#2a3f52;transform:translateY(-2px)}
+
+/* ─── DATA PULSE ─── */
+.dp{position:absolute;width:300px;height:300px;right:120px;top:50%;transform:translateY(-60%);z-index:0;pointer-events:none}
+.dp svg{width:100%;height:100%;opacity:.08}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  nav{padding:14px 22px}nav.sc{padding:10px 22px}
+  .nlinks{display:none}
+  #hero{padding:0 22px 64px}
+  .hero-inner{padding-top:120px}
+  .dp{display:none}
+  .hstats{gap:28px}
+  .hero-bottom{flex-direction:column;gap:28px;align-items:flex-start}
+  .wrap{padding:72px 22px}
+  .about-g,.ct-g{grid-template-columns:1fr}
+  .photo-frame{display:none}
+  .skills-g{grid-template-columns:1fr}
+  .exp-item{grid-template-columns:1fr;gap:6px}
+  .proj-g{grid-template-columns:1fr}
+  .res-g{grid-template-columns:1fr;gap:36px}
+  .panel{width:100%}
+}
+</style>
+</head>
+<body class="em">
+
+<!-- Edit Bar -->
+<div class="ebar" id="ebar">
+  <span class="ebadge">EDIT MODE</span>
+  <span class="ehint" id="autosave-status">Changes auto-saved in browser</span>
+  <button class="ebtn ebtn-exit" onclick="toggleEdit()">👁 Exit</button>
+  <button class="ebtn" style="background:transparent;color:#e05252;border:1px solid #5a2a2a" onclick="clearSaved()">↺ Reset</button>
+  <button class="ebtn ebtn-manage" onclick="openPanel()">⚙ Sections</button>
+  <button class="ebtn ebtn-save" onclick="saveHTML()">↓ Download HTML</button>
+</div>
+
+<!-- Side Panel -->
+<div class="panel" id="panel">
+  <div class="pt">Edit Sections</div>
+  <div class="ps">Use fields below, or click text on the page directly.</div>
+
+  <div class="psec"><div class="psec-hd">Highlight Colour</div>
+    <div class="swatches">
+      <div class="sw on" style="background:#2a7f62" onclick="setHi('#2a7f62',this)" title="Forest Green"></div>
+      <div class="sw" style="background:#1c6c9e" onclick="setHi('#1c6c9e',this)" title="Ocean Blue"></div>
+      <div class="sw" style="background:#e8a838" onclick="setHi('#e8a838',this)" title="Amber"></div>
+      <div class="sw" style="background:#8b4a2a" onclick="setHi('#8b4a2a',this)" title="Rust"></div>
+      <div class="sw" style="background:#6a2a7f" onclick="setHi('#6a2a7f',this)" title="Plum"></div>
+      <div class="sw" style="background:#2a5f4f" onclick="setHi('#2a5f4f',this)" title="Dark Teal"></div>
+    </div>
+  </div>
+
+  <div class="psec"><div class="psec-hd">Hero Stats</div><div id="sp-stats"><div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+      <input style="width:52px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="4+" placeholder="#" onchange="D.stats[0].n=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Years Experience" placeholder="Label" onchange="D.stats[0].l=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <button onclick="D.stats.splice(0,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+    </div><div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+      <input style="width:52px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="30+" placeholder="#" onchange="D.stats[1].n=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Dashboards Built" placeholder="Label" onchange="D.stats[1].l=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <button onclick="D.stats.splice(1,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+    </div><div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+      <input style="width:52px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="5" placeholder="#" onchange="D.stats[2].n=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Tools Mastered" placeholder="Label" onchange="D.stats[2].l=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <button onclick="D.stats.splice(2,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+    </div></div><button class="padd" onclick="addStat()">+ Add Stat</button></div>
+  <div class="psec"><div class="psec-hd">About — Info Rows</div><div id="sp-kv"><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Current Role" placeholder="Key" onchange="D.kv[0].k=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.kv.splice(0,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Data Analyst" placeholder="Value" onchange="D.kv[0].v=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Company" placeholder="Key" onchange="D.kv[1].k=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.kv.splice(1,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="MED MANOR Organics Pvt. Ltd." placeholder="Value" onchange="D.kv[1].v=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Location" placeholder="Key" onchange="D.kv[2].k=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.kv.splice(2,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Hyderabad, Telangana, India" placeholder="Value" onchange="D.kv[2].v=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Core Stack" placeholder="Key" onchange="D.kv[3].k=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.kv.splice(3,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Python · SQL · Power BI · Excel · DAX" placeholder="Value" onchange="D.kv[3].v=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Email" placeholder="Key" onchange="D.kv[4].k=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.kv.splice(4,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="veerendrasai0704@gmail.com" placeholder="Value" onchange="D.kv[4].v=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Open To" placeholder="Key" onchange="D.kv[5].k=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.kv.splice(5,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Full-time &amp; Freelance opportunities" placeholder="Value" onchange="D.kv[5].v=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div></div><button class="padd" onclick="addKV()">+ Add Row</button></div>
+  <div class="psec"><div class="psec-hd">Skills</div><div id="sp-skills"><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:4px;align-items:center">
+        <input style="width:60px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Analysis" placeholder="Cat" onchange="D.skills[0].cat=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Data Analysis" placeholder="Title" onchange="D.skills[0].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <button onclick="D.skills.splice(0,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Python (Pandas, NumPy), SQL (MySQL, PostgreSQL), Excel (Pivot, VLOOKUP, DAX), Statistical Analysis, Data Cleaning / ETL" placeholder="Items, comma separated" onchange="D.skills[0].items=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:4px;align-items:center">
+        <input style="width:60px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Visualise" placeholder="Cat" onchange="D.skills[1].cat=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="BI &amp; Dashboards" placeholder="Title" onchange="D.skills[1].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <button onclick="D.skills.splice(1,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Power BI, Matplotlib / Seaborn, Plotly, Excel Charts, Report Automation" placeholder="Items, comma separated" onchange="D.skills[1].items=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:4px;align-items:center">
+        <input style="width:60px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="ML &amp; AI" placeholder="Cat" onchange="D.skills[2].cat=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Machine Learning" placeholder="Title" onchange="D.skills[2].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <button onclick="D.skills.splice(2,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Scikit-learn, Regression &amp; Classification, Clustering (K-Means), Feature Engineering, Model Evaluation" placeholder="Items, comma separated" onchange="D.skills[2].items=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div></div><button class="padd" onclick="addSkill()">+ Add Group</button></div>
+  <div class="psec"><div class="psec-hd">Experience</div><div id="sp-exp"><div class="pi">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">Role 1</span><button onclick="D.exp.splice(0,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="2022 – Present" placeholder="Period" onchange="D.exp[0].period=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Data Analyst" placeholder="Job Title" onchange="D.exp[0].role=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="MED MANOR Organics Pvt. Ltd.
+Hyderabad" placeholder="Company, City" onchange="D.exp[0].company=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <textarea style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;resize:vertical;min-height:58px;line-height:1.5;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" placeholder="Description" onchange="D.exp[0].desc=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">Own the end-to-end reporting pipeline for HR, Sales, and Operations. Built automated dashboards that eliminated 10+ hours of weekly manual work, and designed the company's first structured helpdesk analytics system.</textarea>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Power BI, Python, SQL, Excel, Process Automation" placeholder="Tags, comma separated" onchange="D.exp[0].tags=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">Role 2</span><button onclick="D.exp.splice(1,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="2020 – 2022" placeholder="Period" onchange="D.exp[1].period=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Junior Data Analyst" placeholder="Job Title" onchange="D.exp[1].role=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Previous Organisation
+Hyderabad" placeholder="Company, City" onchange="D.exp[1].company=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <textarea style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;resize:vertical;min-height:58px;line-height:1.5;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" placeholder="Description" onchange="D.exp[1].desc=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">Supported the analytics team in producing weekly and monthly business reports. Built Excel models for sales forecasting and assisted in migrating legacy spreadsheet reports to Power BI dashboards.</textarea>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Excel, Power BI, SQL, Data Modelling" placeholder="Tags, comma separated" onchange="D.exp[1].tags=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div></div><button class="padd" onclick="addExp()">+ Add Role</button></div>
+  <div class="psec"><div class="psec-hd">Projects</div><div id="sp-proj"><div class="pi">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">Project 1</span><button onclick="D.proj.splice(0,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="HR Analytics" placeholder="Category" onchange="D.proj[0].cat=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Helpdesk Ticket Report Dashboard" placeholder="Title" onchange="D.proj[0].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <textarea style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;resize:vertical;min-height:58px;line-height:1.5;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" placeholder="Description" onchange="D.proj[0].desc=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">Automated daily and open-ticket reporting for a 14,000+ ticket dataset. Replaced 1 hour of manual work with a drag-and-drop CSV upload tool that renders account-wise, agent-wise, and tag-wise reports in seconds.</textarea>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Python, CSV Parsing, HTML/JS, Data Visualisation" placeholder="Stack, comma separated" onchange="D.proj[0].stack=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">Project 2</span><button onclick="D.proj.splice(1,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Process Automation" placeholder="Category" onchange="D.proj[1].cat=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Monthly Indent Automation System" placeholder="Title" onchange="D.proj[1].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <textarea style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;resize:vertical;min-height:58px;line-height:1.5;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" placeholder="Description" onchange="D.proj[1].desc=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">Digitised the paper-based stationery indent process across all departments. The web form auto-emails the facilities team and logs every submission to Google Sheets — zero manual follow-up required.</textarea>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="HTML/JS, Google Sheets API, EmailJS, Workflow Design" placeholder="Stack, comma separated" onchange="D.proj[1].stack=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">Project 3</span><button onclick="D.proj.splice(2,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Sales Analytics" placeholder="Category" onchange="D.proj[2].cat=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Sales Performance Power BI Dashboard" placeholder="Title" onchange="D.proj[2].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <textarea style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;resize:vertical;min-height:58px;line-height:1.5;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" placeholder="Description" onchange="D.proj[2].desc=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">Built an interactive Power BI report tracking TSO-wise primary and secondary sales, target vs achievement, and territory performance. Reduced time to insight from 2 days to under 10 minutes.</textarea>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Power BI, DAX, SQL, Excel" placeholder="Stack, comma separated" onchange="D.proj[2].stack=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">Project 4</span><button onclick="D.proj.splice(3,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Predictive Analytics" placeholder="Category" onchange="D.proj[3].cat=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Attrition Prediction Model" placeholder="Title" onchange="D.proj[3].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <textarea style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;resize:vertical;min-height:58px;line-height:1.5;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" placeholder="Description" onchange="D.proj[3].desc=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">Developed a logistic regression model to predict employee attrition risk using HR data. Surfaced top drivers of exit and recommended targeted retention interventions, with 82% cross-validated accuracy.</textarea>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Python, Scikit-learn, Pandas, HR Analytics" placeholder="Stack, comma separated" onchange="D.proj[3].stack=this.value.split(',').map(x=&gt;x.trim()).filter(Boolean);render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div></div><button class="padd" onclick="addProj()">+ Add Project</button></div>
+  <div class="psec"><div class="psec-hd">Education</div><div id="sp-edu"><div class="pi">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="2016 – 2020" placeholder="Year range" onchange="D.edu[0].yr=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="B.Tech / B.E — Computer Science" placeholder="Degree" onchange="D.edu[0].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="University Name, Hyderabad" placeholder="Institution" onchange="D.edu[0].place=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <button onclick="D.edu.splice(0,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+    </div></div><button class="padd" onclick="addEdu()">+ Add</button></div>
+  <div class="psec"><div class="psec-hd">Certifications</div><div id="sp-cert"><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:4px;align-items:center">
+        <input style="width:60px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="2024" placeholder="Year" onchange="D.cert[0].yr=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.cert.splice(0,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Microsoft Power BI Data Analyst (PL-300)" placeholder="Certification" onchange="D.cert[0].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Microsoft" placeholder="Issuer" onchange="D.cert[0].place=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:4px;align-items:center">
+        <input style="width:60px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="2023" placeholder="Year" onchange="D.cert[1].yr=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.cert.splice(1,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Google Data Analytics Certificate" placeholder="Certification" onchange="D.cert[1].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Google / Coursera" placeholder="Issuer" onchange="D.cert[1].place=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:4px;align-items:center">
+        <input style="width:60px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="2022" placeholder="Year" onchange="D.cert[2].yr=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"> <button onclick="D.cert.splice(2,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Python for Data Science and AI" placeholder="Certification" onchange="D.cert[2].title=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+      <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="IBM / Coursera" placeholder="Issuer" onchange="D.cert[2].place=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+    </div></div><button class="padd" onclick="addCert()">+ Add</button></div>
+  <div class="psec"><div class="psec-hd">Contact Links</div><div id="sp-links"><div class="pi">
+      <div style="display:flex;gap:5px;align-items:center">
+        <input style="width:80px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="LinkedIn" placeholder="Label" onchange="D.links[0].lbl=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="https://www.linkedin.com/in/veerendrasai7/" placeholder="URL" onchange="D.links[0].href=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <button onclick="D.links.splice(0,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;align-items:center">
+        <input style="width:80px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="GitHub" placeholder="Label" onchange="D.links[1].lbl=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="https://github.com/veeru74/VeerendraSai" placeholder="URL" onchange="D.links[1].href=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <button onclick="D.links.splice(1,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;align-items:center">
+        <input style="width:80px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Email" placeholder="Label" onchange="D.links[2].lbl=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="mailto:veerendrasai0704@gmail.com" placeholder="URL" onchange="D.links[2].href=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <button onclick="D.links.splice(2,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+    </div><div class="pi">
+      <div style="display:flex;gap:5px;align-items:center">
+        <input style="width:80px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="Resume PDF" placeholder="Label" onchange="D.links[3].lbl=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <input style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="#" placeholder="URL" onchange="D.links[3].href=this.value;render()" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <button onclick="D.links.splice(3,1);render()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>
+      </div>
+    </div></div><button class="padd" onclick="addLink()">+ Add Link</button></div>
+
+  <div class="pbtns">
+    <button class="pb1" onclick="saveHTML()">↓ Save &amp; Download</button>
+    <button class="pb2" onclick="closePanel()">Close</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav" class="">
+  <div class="nlogo" id="nLogo" contenteditable="true">VSY</div>
+  <ul class="nlinks">
+    <li><a href="#about-s">About</a></li>
+    <li><a href="#skills-s">Skills</a></li>
+    <li><a href="#exp-s">Experience</a></li>
+    <li><a href="#proj-s">Projects</a></li>
+    <li><a href="#ct-s">Contact</a></li>
+  </ul>
+  <button class="ncta" onclick="document.getElementById('ct-s').scrollIntoView({behavior:'smooth'})">Hire Me</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-num">DA</div>
+  <!-- data visual deco -->
+  <div class="dp">
+    <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="140" stroke="#2a7f62" stroke-width="1"></circle>
+      <circle cx="150" cy="150" r="100" stroke="#2a7f62" stroke-width="1"></circle>
+      <circle cx="150" cy="150" r="60" stroke="#2a7f62" stroke-width="1"></circle>
+      <line x1="10" y1="150" x2="290" y2="150" stroke="#2a7f62" stroke-width="1"></line>
+      <line x1="150" y1="10" x2="150" y2="290" stroke="#2a7f62" stroke-width="1"></line>
+      <line x1="51" y1="51" x2="249" y2="249" stroke="#2a7f62" stroke-width=".5"></line>
+      <line x1="249" y1="51" x2="51" y2="249" stroke="#2a7f62" stroke-width=".5"></line>
+      <rect x="120" y="190" width="12" height="30" fill="#2a7f62" opacity=".4"></rect>
+      <rect x="138" y="175" width="12" height="45" fill="#2a7f62" opacity=".4"></rect>
+      <rect x="156" y="160" width="12" height="60" fill="#2a7f62" opacity=".6"></rect>
+      <rect x="174" y="140" width="12" height="80" fill="#2a7f62" opacity=".8"></rect>
+    </svg>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-ey"><span class="hero-ey-dot"></span><span id="hTag" contenteditable="true">Data Analyst · Hyderabad, India</span></div>
+    <h1 class="hero-name">
+      <span id="hFirst" contenteditable="true">Veerendra Sai</span><br>
+      <span class="ital" id="hLast" contenteditable="true">Yelubandi</span>
+    </h1>
+    <p class="hero-role" id="hRole" contenteditable="true">
+      Turning raw data into <strong>clear decisions</strong>. I specialise in building dashboards, uncovering patterns in complex datasets, and communicating insights that actually move the needle.
+    </p>
+    <div class="hbtns">
+      <a href="#proj-s" class="btn-solid">View Projects</a>
+      <a href="#ct-s" class="btn-ghost">Get in Touch</a>
+    </div>
+    <div class="hero-bottom">
+      <div class="hstats" id="hStats"><div><div class="hstat-n">4+</div><div class="hstat-l">Years Experience</div></div><div><div class="hstat-n">30+</div><div class="hstat-l">Dashboards Built</div></div><div><div class="hstat-n">5</div><div class="hstat-l">Tools Mastered</div></div></div>
+      <div class="hero-scroll"><div class="scroll-bar"></div><span>Scroll</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<div id="about-s" class="wrap rv in">
+  <div class="about-g">
+    <div>
+      <div class="stag">About Me</div>
+      <h2 class="stitle" id="abTitle" contenteditable="true">Data is the story.<br><em style="font-style:italic">I write the narrative.</em></h2>
+      <p id="abP1" contenteditable="true">I'm a Data Analyst with 3–5 years of experience turning complex data into clear, actionable insights. I work across Python, SQL, Power BI, and Excel — building dashboards, writing clean queries, and helping teams make smarter decisions. Based in Hyderabad, I'm currently open to Data Analyst and Analytics Engineer roles where good work actually matters.</p>
+      <p id="abP2" contenteditable="true"><br></p>
+      <p id="abP3" contenteditable="true"><br></p>
+      <div class="akv" id="abKV"><div class="akvr"><div class="akvk">Current Role</div><div class="akvv">Data Analyst</div></div><div class="akvr"><div class="akvk">Company</div><div class="akvv">MED MANOR Organics Pvt. Ltd.</div></div><div class="akvr"><div class="akvk">Location</div><div class="akvv">Hyderabad, Telangana, India</div></div><div class="akvr"><div class="akvk">Core Stack</div><div class="akvv">Python · SQL · Power BI · Excel · DAX</div></div><div class="akvr"><div class="akvk">Email</div><div class="akvv"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ec9a89899e8982889e8d9f8d85dcdbdcd8ac8b818d8580c28f8381">[email&#160;protected]</a></div></div><div class="akvr"><div class="akvk">Open To</div><div class="akvv">Full-time &amp; Freelance opportunities</div></div></div>
+    </div>
+    <div>
+      <div class="photo-frame" id="photoWrap" onclick="triggerPhoto()">
+        <div class="phph" id="phph">
+          <span class="i">◉</span>
+          <span class="t">Upload Your Photo</span>
+        </div>
+      </div>
+      <input type="file" id="photoIn" accept="image/*" style="display:none" onchange="loadPhoto(event)">
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<div id="skills-s" class="wrap rv in">
+  <div class="stag">Technical Skills</div>
+  <h2 class="stitle" id="skTitle" contenteditable="true">Tools &amp; Technologies</h2>
+  <p class="ssub" id="skSub" contenteditable="true">The stack I use to explore, analyse, and present data.</p>
+  <div class="skills-g" id="skillsG"><div class="sc">
+      <div class="sc-cat">Analysis</div>
+      <div class="sc-title">Data Analysis</div>
+      <div class="slist"><div class="sr"><div class="sr-dot"></div><div class="sr-name">Python (Pandas, NumPy)</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">SQL (MySQL, PostgreSQL)</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Excel (Pivot, VLOOKUP, DAX)</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Statistical Analysis</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Data Cleaning / ETL</div></div></div>
+    </div><div class="sc">
+      <div class="sc-cat">Visualise</div>
+      <div class="sc-title">BI &amp; Dashboards</div>
+      <div class="slist"><div class="sr"><div class="sr-dot"></div><div class="sr-name">Power BI</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Matplotlib / Seaborn</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Plotly</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Excel Charts</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Report Automation</div></div></div>
+    </div><div class="sc">
+      <div class="sc-cat">ML &amp; AI</div>
+      <div class="sc-title">Machine Learning</div>
+      <div class="slist"><div class="sr"><div class="sr-dot"></div><div class="sr-name">Scikit-learn</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Regression &amp; Classification</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Clustering (K-Means)</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Feature Engineering</div></div><div class="sr"><div class="sr-dot"></div><div class="sr-name">Model Evaluation</div></div></div>
+    </div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<div id="exp-s" class="wrap rv in">
+  <div class="stag">Career</div>
+  <h2 class="stitle" id="exTitle" contenteditable="true">Work Experience</h2>
+  <p class="ssub" id="exSub" contenteditable="true">Roles where data became decisions.</p>
+  <div class="exp-list" id="expList"><div class="exp-item">
+      <div><div class="em-period">2022 – Present</div><div class="em-company" style="white-space:pre-line">MED MANOR Organics Pvt. Ltd.
+Hyderabad</div></div>
+      <div>
+        <div class="er-role">Data Analyst</div>
+        <div class="er-desc">Own the end-to-end reporting pipeline for HR, Sales, and Operations. Built automated dashboards that eliminated 10+ hours of weekly manual work, and designed the company's first structured helpdesk analytics system.</div>
+        <div class="etags"><span class="etag">Power BI</span><span class="etag">Python</span><span class="etag">SQL</span><span class="etag">Excel</span><span class="etag">Process Automation</span></div>
+      </div>
+    </div><div class="exp-item">
+      <div><div class="em-period">2020 – 2022</div><div class="em-company" style="white-space:pre-line">Previous Organisation
+Hyderabad</div></div>
+      <div>
+        <div class="er-role">Junior Data Analyst</div>
+        <div class="er-desc">Supported the analytics team in producing weekly and monthly business reports. Built Excel models for sales forecasting and assisted in migrating legacy spreadsheet reports to Power BI dashboards.</div>
+        <div class="etags"><span class="etag">Excel</span><span class="etag">Power BI</span><span class="etag">SQL</span><span class="etag">Data Modelling</span></div>
+      </div>
+    </div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROJECTS -->
+<div id="proj-s" class="wrap rv in">
+  <div class="stag">Selected Work</div>
+  <h2 class="stitle" id="prTitle" contenteditable="true">Projects &amp; Initiatives</h2>
+  <p class="ssub" id="prSub" contenteditable="true">End-to-end data projects that demonstrate how I think and what I build.</p>
+  <div class="proj-g" id="projG"><div class="pc">
+      <div class="pc-arrow">↗</div>
+      <div class="pc-num">01</div>
+      <div class="pc-cat">HR Analytics</div>
+      <div class="pc-title">Helpdesk Ticket Report Dashboard</div>
+      <div class="pc-desc">Automated daily and open-ticket reporting for a 14,000+ ticket dataset. Replaced 1 hour of manual work with a drag-and-drop CSV upload tool that renders account-wise, agent-wise, and tag-wise reports in seconds.</div>
+      <div class="ptags"><span class="ptag">Python</span><span class="ptag">CSV Parsing</span><span class="ptag">HTML/JS</span><span class="ptag">Data Visualisation</span></div>
+    </div><div class="pc">
+      <div class="pc-arrow">↗</div>
+      <div class="pc-num">02</div>
+      <div class="pc-cat">Process Automation</div>
+      <div class="pc-title">Monthly Indent Automation System</div>
+      <div class="pc-desc">Digitised the paper-based stationery indent process across all departments. The web form auto-emails the facilities team and logs every submission to Google Sheets — zero manual follow-up required.</div>
+      <div class="ptags"><span class="ptag">HTML/JS</span><span class="ptag">Google Sheets API</span><span class="ptag">EmailJS</span><span class="ptag">Workflow Design</span></div>
+    </div><div class="pc">
+      <div class="pc-arrow">↗</div>
+      <div class="pc-num">03</div>
+      <div class="pc-cat">Sales Analytics</div>
+      <div class="pc-title">Sales Performance Power BI Dashboard</div>
+      <div class="pc-desc">Built an interactive Power BI report tracking TSO-wise primary and secondary sales, target vs achievement, and territory performance. Reduced time to insight from 2 days to under 10 minutes.</div>
+      <div class="ptags"><span class="ptag">Power BI</span><span class="ptag">DAX</span><span class="ptag">SQL</span><span class="ptag">Excel</span></div>
+    </div><div class="pc">
+      <div class="pc-arrow">↗</div>
+      <div class="pc-num">04</div>
+      <div class="pc-cat">Predictive Analytics</div>
+      <div class="pc-title">Attrition Prediction Model</div>
+      <div class="pc-desc">Developed a logistic regression model to predict employee attrition risk using HR data. Surfaced top drivers of exit and recommended targeted retention interventions, with 82% cross-validated accuracy.</div>
+      <div class="ptags"><span class="ptag">Python</span><span class="ptag">Scikit-learn</span><span class="ptag">Pandas</span><span class="ptag">HR Analytics</span></div>
+    </div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- RESUME -->
+<div id="res-s" class="wrap rv in">
+  <div class="stag">Background</div>
+  <h2 class="stitle">Education &amp; Certifications</h2>
+  <div class="res-g">
+    <div><h3>Education</h3><div id="eduL"><div class="ri"><div class="ri-yr">2016 – 2020</div><div class="ri-title">B.Tech / B.E — Computer Science</div><div class="ri-place">University Name, Hyderabad</div></div></div></div>
+    <div><h3>Certifications</h3><div id="certL"><div class="ri"><div class="ri-yr">2024</div><div class="ri-title">Microsoft Power BI Data Analyst (PL-300)</div><div class="ri-place">Microsoft</div></div><div class="ri"><div class="ri-yr">2023</div><div class="ri-title">Google Data Analytics Certificate</div><div class="ri-place">Google / Coursera</div></div><div class="ri"><div class="ri-yr">2022</div><div class="ri-title">Python for Data Science and AI</div><div class="ri-place">IBM / Coursera</div></div></div></div>
+  </div>
+  <a href="#" class="dl" onclick="alert('Place your resume PDF in the same folder, then update this link in ⚙ Sections → Resume Link.')">↓ Download Resume</a>
+</div>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<div id="ct-s" class="wrap rv in">
+  <div class="stag">Contact</div>
+  <div class="ct-g">
+    <div>
+      <h2 class="stitle" id="ctTitle" contenteditable="true">Let's talk<br>data.</h2>
+      <p style="color:var(--muted);font-size:14px;font-weight:300" id="ctSub" contenteditable="true">Open to analytics roles, freelance projects, and interesting data conversations. Reach out any time.</p>
+      <div class="ct-email" id="ctEmail" contenteditable="true"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5c2a39392e3932382e3d2f3d356c6b6c681c3b313d3530723f3331">[email&#160;protected]</a></div>
+    </div>
+    <div><div class="clinks" id="ctLinks"><a href="https://www.linkedin.com/in/veerendrasai7/" class="cl"><span class="cl-lbl">LinkedIn</span><span class="cl-arr">↗</span></a><a href="https://github.com/veeru74/VeerendraSai" class="cl"><span class="cl-lbl">GitHub</span><span class="cl-arr">↗</span></a><a href="/cdn-cgi/l/email-protection#2e584b4b5c4b404a5c4f5d4f471e191e1a6e49434f4742004d4143" class="cl"><span class="cl-lbl">Email</span><span class="cl-arr">→</span></a><a href="#" class="cl"><span class="cl-lbl">Resume PDF</span><span class="cl-arr">↓</span></a></div></div>
+  </div>
+</div>
+
+<footer>
+  <span id="ftName" contenteditable="true">Veerendra Sai Yelubandi</span> — Data Analyst Portfolio © <span id="yr">2026</span>
+</footer>
+
+<button id="fab" onclick="toggleEdit()" style="background: rgb(138, 133, 128);">✕ Exit Edit</button>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── DATA (pre-filled for Veerendra) ───────────────────────────
+const D = {
+  hi: '#2a7f62',
+  stats: [
+    {n:'4+', l:'Years Experience'},
+    {n:'30+', l:'Dashboards Built'},
+    {n:'5', l:'Tools Mastered'},
+  ],
+  kv: [
+    {k:'Current Role',   v:'Data Analyst'},
+    {k:'Company',        v:'MED MANOR Organics Pvt. Ltd.'},
+    {k:'Location',       v:'Hyderabad, Telangana, India'},
+    {k:'Core Stack',     v:'Python · SQL · Power BI · Excel · DAX'},
+    {k:'Email',          v:'veerendrasai0704@gmail.com'},
+    {k:'Open To',        v:'Full-time & Freelance opportunities'},
+  ],
+  skills: [
+    {cat:'Analysis',  title:'Data Analysis',  items:['Python (Pandas, NumPy)','SQL (MySQL, PostgreSQL)','Excel (Pivot, VLOOKUP, DAX)','Statistical Analysis','Data Cleaning / ETL']},
+    {cat:'Visualise', title:'BI & Dashboards', items:['Power BI','Matplotlib / Seaborn','Plotly','Excel Charts','Report Automation']},
+    {cat:'ML & AI',   title:'Machine Learning', items:['Scikit-learn','Regression & Classification','Clustering (K-Means)','Feature Engineering','Model Evaluation']},
+  ],
+  exp: [
+    {
+      period:'2022 – Present', company:'MED MANOR Organics Pvt. Ltd.\nHyderabad',
+      role:'Data Analyst',
+      desc:'Own the end-to-end reporting pipeline for HR, Sales, and Operations. Built automated dashboards that eliminated 10+ hours of weekly manual work, and designed the company\'s first structured helpdesk analytics system.',
+      tags:['Power BI','Python','SQL','Excel','Process Automation']
+    },
+    {
+      period:'2020 – 2022', company:'Previous Organisation\nHyderabad',
+      role:'Junior Data Analyst',
+      desc:'Supported the analytics team in producing weekly and monthly business reports. Built Excel models for sales forecasting and assisted in migrating legacy spreadsheet reports to Power BI dashboards.',
+      tags:['Excel','Power BI','SQL','Data Modelling']
+    },
+  ],
+  proj: [
+    {
+      n:'01', cat:'HR Analytics',
+      title:'Helpdesk Ticket Report Dashboard',
+      desc:'Automated daily and open-ticket reporting for a 14,000+ ticket dataset. Replaced 1 hour of manual work with a drag-and-drop CSV upload tool that renders account-wise, agent-wise, and tag-wise reports in seconds.',
+      stack:['Python','CSV Parsing','HTML/JS','Data Visualisation']
+    },
+    {
+      n:'02', cat:'Process Automation',
+      title:'Monthly Indent Automation System',
+      desc:'Digitised the paper-based stationery indent process across all departments. The web form auto-emails the facilities team and logs every submission to Google Sheets — zero manual follow-up required.',
+      stack:['HTML/JS','Google Sheets API','EmailJS','Workflow Design']
+    },
+    {
+      n:'03', cat:'Sales Analytics',
+      title:'Sales Performance Power BI Dashboard',
+      desc:'Built an interactive Power BI report tracking TSO-wise primary and secondary sales, target vs achievement, and territory performance. Reduced time to insight from 2 days to under 10 minutes.',
+      stack:['Power BI','DAX','SQL','Excel']
+    },
+    {
+      n:'04', cat:'Predictive Analytics',
+      title:'Attrition Prediction Model',
+      desc:'Developed a logistic regression model to predict employee attrition risk using HR data. Surfaced top drivers of exit and recommended targeted retention interventions, with 82% cross-validated accuracy.',
+      stack:['Python','Scikit-learn','Pandas','HR Analytics']
+    },
+  ],
+  edu: [
+    {yr:'2016 – 2020', title:'B.Tech / B.E — Computer Science', place:'University Name, Hyderabad'},
+  ],
+  cert: [
+    {yr:'2024', title:'Microsoft Power BI Data Analyst (PL-300)', place:'Microsoft'},
+    {yr:'2023', title:'Google Data Analytics Certificate', place:'Google / Coursera'},
+    {yr:'2022', title:'Python for Data Science and AI', place:'IBM / Coursera'},
+  ],
+  links: [
+    {lbl:'LinkedIn',   arr:'↗', href:'https://www.linkedin.com/in/veerendrasai7/'},
+    {lbl:'GitHub',     arr:'↗', href:'https://github.com/veeru74/VeerendraSai'},
+    {lbl:'Email',      arr:'→', href:'mailto:veerendrasai0704@gmail.com'},
+    {lbl:'Resume PDF', arr:'↓', href:'#'},
+  ],
+};
+
+// ── RENDER ────────────────────────────────────────────────────
+function render(){
+  document.documentElement.style.setProperty('--hi', D.hi);
+
+  document.getElementById('hStats').innerHTML = D.stats.map(s=>
+    `<div><div class="hstat-n">${s.n}</div><div class="hstat-l">${s.l}</div></div>`
+  ).join('');
+
+  document.getElementById('abKV').innerHTML = D.kv.map(r=>
+    `<div class="akvr"><div class="akvk">${r.k}</div><div class="akvv">${r.v}</div></div>`
+  ).join('');
+
+  document.getElementById('skillsG').innerHTML = D.skills.map(s=>
+    `<div class="sc">
+      <div class="sc-cat">${s.cat}</div>
+      <div class="sc-title">${s.title}</div>
+      <div class="slist">${s.items.map(i=>`<div class="sr"><div class="sr-dot"></div><div class="sr-name">${i}</div></div>`).join('')}</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('expList').innerHTML = D.exp.map(e=>
+    `<div class="exp-item">
+      <div><div class="em-period">${e.period}</div><div class="em-company" style="white-space:pre-line">${e.company}</div></div>
+      <div>
+        <div class="er-role">${e.role}</div>
+        <div class="er-desc">${e.desc}</div>
+        <div class="etags">${e.tags.map(t=>`<span class="etag">${t}</span>`).join('')}</div>
+      </div>
+    </div>`
+  ).join('');
+
+  document.getElementById('projG').innerHTML = D.proj.map(p=>
+    `<div class="pc">
+      <div class="pc-arrow">↗</div>
+      <div class="pc-num">${p.n}</div>
+      <div class="pc-cat">${p.cat}</div>
+      <div class="pc-title">${p.title}</div>
+      <div class="pc-desc">${p.desc}</div>
+      <div class="ptags">${p.stack.map(t=>`<span class="ptag">${t}</span>`).join('')}</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('eduL').innerHTML = D.edu.map(e=>
+    `<div class="ri"><div class="ri-yr">${e.yr}</div><div class="ri-title">${e.title}</div><div class="ri-place">${e.place}</div></div>`
+  ).join('');
+
+  document.getElementById('certL').innerHTML = D.cert.map(c=>
+    `<div class="ri"><div class="ri-yr">${c.yr}</div><div class="ri-title">${c.title}</div><div class="ri-place">${c.place}</div></div>`
+  ).join('');
+
+  document.getElementById('ctLinks').innerHTML = D.links.map(l=>
+    `<a href="${l.href}" class="cl"><span class="cl-lbl">${l.lbl}</span><span class="cl-arr">${l.arr}</span></a>`
+  ).join('');
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  renderPanel();
+  setTimeout(initReveal, 80);
+}
+
+// ── PANEL HELPERS ─────────────────────────────────────────────
+const I = (v,oc,ph='',w='100%') =>
+  `<input style="width:${w};background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" value="${v.replace(/"/g,'&quot;')}" placeholder="${ph}" onchange="${oc}" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"/>`;
+const TA = (v,oc,ph='') =>
+  `<textarea style="width:100%;background:#fff;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;resize:vertical;min-height:58px;line-height:1.5;margin-bottom:4px;cursor:text;user-select:text;-webkit-user-select:text" placeholder="${ph}" onchange="${oc}" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">${v}</textarea>`;
+const X = (oc) =>
+  `<button onclick="${oc}" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:13px;flex-shrink:0;padding:0 3px" onmouseover="this.style.color='#e05252'" onmouseout="this.style.color='#ccc'">✕</button>`;
+
+function renderPanel(){
+  document.getElementById('sp-stats').innerHTML = D.stats.map((s,i)=>
+    `<div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+      ${I(s.n,`D.stats[${i}].n=this.value;render()`,'#','52px')}
+      ${I(s.l,`D.stats[${i}].l=this.value;render()`,'Label')}
+      ${X(`D.stats.splice(${i},1);render()`)}
+    </div>`
+  ).join('');
+
+  document.getElementById('sp-kv').innerHTML = D.kv.map((r,i)=>
+    `<div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:5px;align-items:center">
+        ${I(r.k,`D.kv[${i}].k=this.value;render()`,'Key')} ${X(`D.kv.splice(${i},1);render()`)}
+      </div>
+      ${I(r.v,`D.kv[${i}].v=this.value;render()`,'Value')}
+    </div>`
+  ).join('');
+
+  document.getElementById('sp-skills').innerHTML = D.skills.map((s,i)=>
+    `<div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:4px;align-items:center">
+        ${I(s.cat,`D.skills[${i}].cat=this.value;render()`,'Cat','60px')}
+        ${I(s.title,`D.skills[${i}].title=this.value;render()`,'Title')}
+        ${X(`D.skills.splice(${i},1);render()`)}
+      </div>
+      ${I(s.items.join(', '),`D.skills[${i}].items=this.value.split(',').map(x=>x.trim()).filter(Boolean);render()`,'Items, comma separated')}
+    </div>`
+  ).join('');
+
+  document.getElementById('sp-exp').innerHTML = D.exp.map((e,i)=>
+    `<div class="pi">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">Role ${i+1}</span>${X(`D.exp.splice(${i},1);render()`)}
+      </div>
+      ${I(e.period,`D.exp[${i}].period=this.value;render()`,'Period')}
+      ${I(e.role,`D.exp[${i}].role=this.value;render()`,'Job Title')}
+      ${I(e.company,`D.exp[${i}].company=this.value;render()`,'Company, City')}
+      ${TA(e.desc,`D.exp[${i}].desc=this.value;render()`,'Description')}
+      ${I(e.tags.join(', '),`D.exp[${i}].tags=this.value.split(',').map(x=>x.trim()).filter(Boolean);render()`,'Tags, comma separated')}
+    </div>`
+  ).join('');
+
+  document.getElementById('sp-proj').innerHTML = D.proj.map((p,i)=>
+    `<div class="pi">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">Project ${i+1}</span>${X(`D.proj.splice(${i},1);render()`)}
+      </div>
+      ${I(p.cat,`D.proj[${i}].cat=this.value;render()`,'Category')}
+      ${I(p.title,`D.proj[${i}].title=this.value;render()`,'Title')}
+      ${TA(p.desc,`D.proj[${i}].desc=this.value;render()`,'Description')}
+      ${I(p.stack.join(', '),`D.proj[${i}].stack=this.value.split(',').map(x=>x.trim()).filter(Boolean);render()`,'Stack, comma separated')}
+    </div>`
+  ).join('');
+
+  document.getElementById('sp-edu').innerHTML = D.edu.map((e,i)=>
+    `<div class="pi">
+      ${I(e.yr,`D.edu[${i}].yr=this.value;render()`,'Year range')}
+      ${I(e.title,`D.edu[${i}].title=this.value;render()`,'Degree')}
+      ${I(e.place,`D.edu[${i}].place=this.value;render()`,'Institution')}
+      ${X(`D.edu.splice(${i},1);render()`)}
+    </div>`
+  ).join('');
+
+  document.getElementById('sp-cert').innerHTML = D.cert.map((c,i)=>
+    `<div class="pi">
+      <div style="display:flex;gap:5px;margin-bottom:4px;align-items:center">
+        ${I(c.yr,`D.cert[${i}].yr=this.value;render()`,'Year','60px')} ${X(`D.cert.splice(${i},1);render()`)}
+      </div>
+      ${I(c.title,`D.cert[${i}].title=this.value;render()`,'Certification')}
+      ${I(c.place,`D.cert[${i}].place=this.value;render()`,'Issuer')}
+    </div>`
+  ).join('');
+
+  document.getElementById('sp-links').innerHTML = D.links.map((l,i)=>
+    `<div class="pi">
+      <div style="display:flex;gap:5px;align-items:center">
+        ${I(l.lbl,`D.links[${i}].lbl=this.value;render()`,'Label','80px')}
+        ${I(l.href,`D.links[${i}].href=this.value;render()`,'URL')}
+        ${X(`D.links.splice(${i},1);render()`)}
+      </div>
+    </div>`
+  ).join('');
+}
+
+// ── ADDS ──────────────────────────────────────────────────────
+function addStat(){D.stats.push({n:'0',l:'Label'});render()}
+function addKV(){D.kv.push({k:'Key',v:'Value'});render()}
+function addSkill(){D.skills.push({cat:'Area',title:'Skill Group',items:['Skill 1','Skill 2']});render()}
+function addExp(){D.exp.unshift({period:'20XX–Present',role:'Role',company:'Company, City',desc:'Describe your impact.',tags:['Tag']});render()}
+function addProj(){D.proj.push({n:`0${D.proj.length+1}`,cat:'Category',title:'Project Title',desc:'Project description.',stack:['Tech']});render()}
+function addEdu(){D.edu.push({yr:'20XX–20XX',title:'Degree',place:'Institution'});render()}
+function addCert(){D.cert.push({yr:'20XX',title:'Certification',place:'Issuer'});render()}
+function addLink(){D.links.push({lbl:'Platform',arr:'↗',href:'#'});render()}
+
+// ── EDIT MODE ─────────────────────────────────────────────────
+let em=false;
+function toggleEdit(){
+  em=!em;
+  document.body.classList.toggle('em',em);
+  const bar=document.getElementById('ebar'), btn=document.getElementById('fab');
+  document.querySelectorAll('[contenteditable]').forEach(el=>el.contentEditable=em?'true':'false');
+  if(em){bar.classList.remove('hidden');btn.textContent='✕ Exit Edit';btn.style.background='#8a8580';}
+  else{bar.classList.add('hidden');btn.textContent='✏ Edit Portfolio';btn.style.background='var(--accent)';closePanel();}
+}
+function openPanel(){document.getElementById('panel').classList.add('open')}
+function closePanel(){document.getElementById('panel').classList.remove('open')}
+function setHi(c,el){
+  D.hi=c;document.documentElement.style.setProperty('--hi',c);
+  document.querySelectorAll('.sw').forEach(s=>s.classList.remove('on'));el.classList.add('on');
+}
+
+// ── PHOTO ─────────────────────────────────────────────────────
+function triggerPhoto(){if(em)document.getElementById('photoIn').click()}
+function loadPhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const w=document.getElementById('photoWrap');
+    w.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover"/>`;
+  };r.readAsDataURL(f);
+}
+
+// ── SAVE ──────────────────────────────────────────────────────
+function saveHTML(){
+  const blob=new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='veerendra-sai-portfolio.html';a.click();URL.revokeObjectURL(a.href);
+}
+
+
+// ── AUTO-SAVE to localStorage ────────────────────────────────
+const SAVE_KEY = 'vsy_portfolio_data';
+const SAVE_CONTENT_KEY = 'vsy_portfolio_content';
+
+function autoSave(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify(D));
+    // Save contenteditable fields
+    const content = {};
+    document.querySelectorAll('[id][contenteditable]').forEach(el=>{
+      content[el.id] = el.innerHTML;
+    });
+    localStorage.setItem(SAVE_CONTENT_KEY, JSON.stringify(content));
+    showSaveToast('Changes auto-saved');
+  } catch(e){ console.warn('Auto-save failed', e); }
+}
+
+function loadSaved(){
+  try{
+    const saved = localStorage.getItem(SAVE_KEY);
+    if(saved){ Object.assign(D, JSON.parse(saved)); }
+    // Restore contenteditable fields after render
+    const savedContent = localStorage.getItem(SAVE_CONTENT_KEY);
+    if(savedContent){
+      const content = JSON.parse(savedContent);
+      setTimeout(()=>{
+        Object.keys(content).forEach(id=>{
+          const el = document.getElementById(id);
+          if(el && el.hasAttribute('contenteditable')) el.innerHTML = content[id];
+        });
+      }, 120);
+    }
+  } catch(e){ console.warn('Load saved failed', e); }
+}
+
+function clearSaved(){
+  if(confirm('Reset all changes and restore original content?')){
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(SAVE_CONTENT_KEY);
+    location.reload();
+  }
+}
+
+function showSaveToast(msg){
+  let t = document.getElementById('save-toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'save-toast';
+    t.style.cssText = 'position:fixed;bottom:72px;right:28px;z-index:9999;background:#1c2b3a;color:#fff;font-size:11px;padding:6px 14px;border-radius:4px;opacity:0;transition:opacity .3s;pointer-events:none;letter-spacing:.3px;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>{ t.style.opacity='0'; }, 2000);
+}
+
+// Patch render() to auto-save after every change
+const _origRender = render;
+window.render = function(){
+  _origRender();
+  autoSave();
+};
+
+// Patch contenteditable inline edits to also auto-save
+document.addEventListener('input', function(e){
+  if(e.target.hasAttribute('contenteditable')){
+    clearTimeout(window._ceTimer);
+    window._ceTimer = setTimeout(autoSave, 600);
+  }
+});
+
+// ── SCROLL REVEAL ────────────────────────────────────────────
+function initReveal(){
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  },{threshold:0.12});
+  document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+}
+
+// ── NAV SCROLL ───────────────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('sc', window.scrollY > 60);
+});
+
+// ── INIT ─────────────────────────────────────────────────────
+document.getElementById('yr').textContent = new Date().getFullYear();
+loadSaved();
+render();
+
+// Start in view mode (not edit mode)
+document.body.classList.remove('em');
+document.getElementById('ebar').classList.add('hidden');
+em = false;
+document.querySelectorAll('[contenteditable]').forEach(el=>el.contentEditable='false');
+document.getElementById('fab').textContent = '✏ Edit Portfolio';
+document.getElementById('fab').style.background = 'var(--accent)';
+</script>
+</body>
+</html>
