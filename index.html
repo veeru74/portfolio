@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en" style="--head-font: 'Fraunces',serif; --hero-size: clamp(40px,7vw,84px); --radius: 20px; --body-font: Georgia,serif;"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veerendra Sai Yelubandi — Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&amp;family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&amp;family=Inter:wght@300;400;500;600&amp;family=Playfair+Display:ital,wght@0,700;0,800;1,700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Fraunces:ital,wght@0,700;0,800;1,700&amp;display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#f8f7f3;--surface:#ffffff;--card:#f2f0ea;--border:#e4e0d8;--border2:#d0ccc2;
+  --accent:#2a7f62;--accent2:#1f6b52;--text:#1a1a1a;--muted:#9a9590;--muted2:#6b6760;
+  --body-font:'DM Sans',sans-serif;--head-font:'Syne',sans-serif;
+  --base-size:16px;--hero-size:clamp(52px,9vw,108px);
+  --radius:3px;--anim-speed:0.8s;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--body-font);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;cursor:none;font-size:var(--base-size)}
+
+/* ── EDITOR TOGGLE BUTTON ── */
+#edit-fab{
+  position:fixed;bottom:28px;left:28px;z-index:10000;
+  background:var(--accent);color:#fff;border:none;border-radius:50px;
+  padding:11px 22px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:var(--head-font);letter-spacing:.5px;text-transform:uppercase;
+  box-shadow:0 8px 28px rgba(0,0,0,0.15);transition:all .2s;
+  display:flex;align-items:center;gap:8px;
+}
+#edit-fab:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,0.2)}
+#edit-fab .fab-icon{font-size:14px;line-height:1}
+
+/* ── EDITOR PANEL ── */
+#editor{
+  position:fixed;left:0;top:0;bottom:0;width:340px;z-index:9999;
+  background:#fff;border-right:1px solid #e8e4dc;
+  transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:4px 0 40px rgba(0,0,0,0.1);
+}
+#editor.open{transform:translateX(0)}
+.ed-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px;border-bottom:1px solid #eee;flex-shrink:0;
+}
+.ed-header-title{font-family:var(--head-font);font-size:15px;font-weight:700;color:#1a1a1a}
+.ed-header-sub{font-size:10px;color:#999;margin-top:1px}
+.ed-close{background:none;border:none;font-size:20px;cursor:pointer;color:#999;padding:4px;line-height:1}
+.ed-close:hover{color:#333}
+.ed-tabs{display:flex;border-bottom:1px solid #eee;flex-shrink:0;overflow-x:auto}
+.ed-tab{
+  flex:1;min-width:60px;padding:10px 8px;font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.5px;border:none;background:none;cursor:pointer;
+  color:#999;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;
+}
+.ed-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.ed-body{flex:1;overflow-y:auto;padding:0}
+.ed-section{padding:16px 20px;border-bottom:1px solid #f0ede8}
+.ed-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#bbb;margin-bottom:12px}
+.ed-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+.ed-label{font-size:12px;color:#555;font-weight:500;white-space:nowrap;min-width:80px}
+.ed-input{
+  flex:1;border:1px solid #e8e4dc;border-radius:6px;padding:6px 10px;
+  font-size:12px;color:#1a1a1a;outline:none;background:#fafaf8;transition:border .15s;
+  font-family:'DM Sans',sans-serif;
+}
+.ed-input:focus{border-color:var(--accent);background:#fff}
+.ed-input[type=color]{
+  width:44px;height:32px;padding:2px 4px;border-radius:6px;cursor:pointer;flex:none;
+}
+.ed-input[type=range]{padding:0;background:none;border:none;cursor:pointer;height:20px}
+.ed-input[type=range]:focus{box-shadow:none}
+.ed-input[type=checkbox]{width:16px;height:16px;flex:none;cursor:pointer;accent-color:var(--accent)}
+.ed-select{
+  flex:1;border:1px solid #e8e4dc;border-radius:6px;padding:6px 10px;
+  font-size:12px;color:#1a1a1a;background:#fafaf8;cursor:pointer;outline:none;
+  font-family:'DM Sans',sans-serif;
+}
+.ed-select:focus{border-color:var(--accent)}
+.ed-textarea{
+  width:100%;border:1px solid #e8e4dc;border-radius:6px;padding:8px 10px;
+  font-size:12px;color:#1a1a1a;background:#fafaf8;outline:none;resize:vertical;
+  min-height:60px;line-height:1.5;font-family:'DM Sans',sans-serif;
+  transition:border .15s;
+}
+.ed-textarea:focus{border-color:var(--accent)}
+.ed-val{font-size:11px;color:#999;min-width:28px;text-align:right}
+.ed-footer{
+  padding:14px 20px;border-top:1px solid #eee;flex-shrink:0;
+  display:flex;gap:8px;
+}
+.ed-btn{
+  flex:1;padding:10px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+  border:none;font-family:'DM Sans',sans-serif;transition:all .15s;
+}
+.ed-btn-save{background:var(--accent);color:#fff}
+.ed-btn-save:hover{background:var(--accent2)}
+.ed-btn-reset{background:#f0ede8;color:#666}
+.ed-btn-reset:hover{background:#e8e4dc}
+.swatch-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}
+.swatch{
+  width:28px;height:28px;border-radius:50%;cursor:pointer;
+  border:3px solid transparent;transition:all .15s;
+}
+.swatch.active{border-color:#1a1a1a;transform:scale(1.15)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.toggle-label{font-size:12px;color:#555}
+.toggle-switch{
+  width:36px;height:20px;background:#ddd;border-radius:10px;cursor:pointer;
+  position:relative;transition:background .2s;
+}
+.toggle-switch.on{background:var(--accent)}
+.toggle-switch::after{
+  content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;
+  top:3px;left:3px;transition:left .2s;
+}
+.toggle-switch.on::after{left:19px}
+.font-preview{font-size:13px;color:#999;margin-top:4px;font-style:italic;text-align:center;padding:6px;background:#f8f7f3;border-radius:4px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ── WATERMARK ── */
+#watermark{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:1;overflow:hidden}
+#watermark span{font-family:var(--head-font);font-size:clamp(60px,10vw,130px);font-weight:800;color:rgba(42,127,98,0.05);white-space:nowrap;letter-spacing:-2px;transform:rotate(-20deg);user-select:none}
+
+/* ── CURSOR ── */
+#cur{position:fixed;top:0;left:0;pointer-events:none;z-index:9998}
+#cur-dot{position:absolute;width:8px;height:8px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%);transition:width .15s,height .15s}
+#cur-ring{position:absolute;width:40px;height:40px;border:1.5px solid rgba(42,127,98,0.45);border-radius:50%;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#cur-trail{position:absolute;pointer-events:none}
+.trail-dot{position:absolute;width:4px;height:4px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%)}
+body.cursor-hover #cur-dot{width:16px;height:16px}
+body.cursor-hover #cur-ring{width:56px;height:56px}
+
+/* ── FLOATING NAV ── */
+#nav-wrap{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:600;transition:all .4s}
+nav{display:flex;align-items:center;gap:32px;background:rgba(255,255,255,0.88);border:1px solid rgba(0,0,0,0.08);border-radius:50px;padding:12px 28px;backdrop-filter:blur(20px);box-shadow:0 8px 40px rgba(0,0,0,0.1);transition:all .4s}
+nav.scrolled{background:rgba(255,255,255,0.97);box-shadow:0 8px 40px rgba(0,0,0,0.12),0 0 0 1px rgba(42,127,98,0.1)}
+.nlogo{font-family:var(--head-font);font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.5px;text-decoration:none}
+.nlogo em{color:var(--accent);font-style:normal}
+.nlinks{display:flex;gap:24px;list-style:none}
+.nlinks a{color:var(--muted2);text-decoration:none;font-size:12px;font-weight:400;transition:color .2s;white-space:nowrap}
+.nlinks a:hover,.nlinks a.active{color:var(--accent)}
+.ncta{background:var(--accent);color:#fff;border:none;border-radius:50px;padding:8px 20px;font-size:11px;font-weight:700;cursor:none;font-family:var(--head-font);text-transform:uppercase;transition:all .2s}
+.ncta:hover{background:var(--accent2);transform:scale(1.05)}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 64px 80px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(42,127,98,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(42,127,98,0.06) 1px,transparent 1px);background-size:80px 80px}
+.hero-glow{position:absolute;top:15%;right:8%;width:600px;height:600px;background:radial-gradient(circle,rgba(42,127,98,0.08) 0%,transparent 65%);z-index:0;pointer-events:none;animation:glowPulse 4s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.hero-inner{position:relative;z-index:2;padding-top:140px}
+.hero-ey{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:500;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;opacity:0;animation:fadeUp var(--anim-speed) .2s forwards}
+.hero-ey::before{content:'';width:32px;height:1px;background:var(--accent)}
+.hero-name{font-family:var(--head-font);font-size:var(--hero-size);font-weight:800;line-height:.92;color:var(--text);letter-spacing:-3px;margin-bottom:32px;opacity:0;animation:fadeUp var(--anim-speed) .35s forwards}
+.hero-name .ln2{color:var(--accent);display:block}
+.hero-desc{font-size:clamp(15px,1.8vw,18px);font-weight:300;color:var(--muted2);max-width:540px;line-height:1.75;margin-bottom:48px;opacity:0;animation:fadeUp var(--anim-speed) .5s forwards}
+.hero-desc strong{color:var(--text);font-weight:500}
+.hero-btns{display:flex;gap:20px;flex-wrap:wrap;opacity:0;animation:fadeUp var(--anim-speed) .65s forwards}
+.btn-prim{background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:14px 36px;font-size:13px;font-weight:700;cursor:none;font-family:var(--head-font);text-transform:uppercase;text-decoration:none;display:inline-block;transition:all .25s}
+.btn-prim:hover{background:var(--accent2);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 36px;font-size:13px;font-weight:400;cursor:none;text-decoration:none;display:inline-block;transition:all .25s}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.hero-stats{display:flex;gap:56px;margin-top:72px;padding-top:40px;border-top:1px solid var(--border);opacity:0;animation:fadeUp var(--anim-speed) .8s forwards}
+.hstat-n{font-family:var(--head-font);font-size:48px;font-weight:800;color:var(--text);line-height:1}
+.hstat-n em{color:var(--accent);font-style:normal}
+.hstat-l{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── MARQUEE ── */
+.marquee-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);padding:14px 0}
+.marquee-track{display:flex;white-space:nowrap;animation:marquee 30s linear infinite}
+.marquee-item{font-family:var(--head-font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--muted);padding:0 40px}
+.marquee-item em{color:var(--accent);font-style:normal;margin-right:40px}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SHARED ── */
+.wrap{max-width:1140px;margin:0 auto;padding:100px 64px}
+.sec-tag{display:inline-flex;align-items:center;gap:10px;font-size:10px;font-weight:700;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.sec-tag::before{content:'';width:20px;height:1px;background:var(--accent)}
+.sec-title{font-family:var(--head-font);font-size:clamp(34px,5vw,58px);font-weight:800;line-height:.95;color:var(--text);letter-spacing:-2px;margin-bottom:56px}
+.sec-title em{color:var(--accent);font-style:normal}
+.divider{height:1px;background:var(--border)}
+
+/* ── ABOUT ── */
+#about-s{background:var(--surface)}
+.about-g{display:grid;grid-template-columns:1.1fr .9fr;gap:80px;align-items:start}
+.about-text p{font-size:15px;color:var(--muted2);line-height:1.9;font-weight:300;margin-bottom:20px}
+.about-text p strong{color:var(--text);font-weight:500}
+.akv{margin-top:40px;border-top:1px solid var(--border)}
+.akvr{display:flex;padding:14px 0;border-bottom:1px solid var(--border)}
+.akvk{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;width:140px;flex-shrink:0;text-transform:uppercase}
+.akvv{font-size:13px;color:var(--text);font-weight:400}
+.photo-frame{aspect-ratio:3/4;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:none;position:sticky;top:120px;transition:border-color .3s}
+.photo-frame:hover{border-color:var(--accent)}
+.phph{text-align:center;color:var(--muted)}
+.phph .pi{font-size:44px;opacity:.15;display:block;margin-bottom:10px}
+.phph .pt{font-size:10px;letter-spacing:2px;text-transform:uppercase}
+
+/* ── SKILLS ── */
+#skills-s{background:var(--bg)}
+.skills-g{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.sc{background:var(--bg);padding:36px 30px;transition:background .25s;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.sc:hover{background:var(--surface)}
+.sc:hover::before{transform:scaleX(1)}
+.sc-cat{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.sc-title{font-family:var(--head-font);font-size:22px;font-weight:700;color:var(--text);margin-bottom:22px;line-height:1.2}
+.slist{display:flex;flex-direction:column;gap:9px}
+.sr{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted2)}
+.sr::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* ── VIZ ── */
+#viz-s{background:var(--surface)}
+.viz-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.viz-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:28px 24px;transition:border-color .25s,transform .3s}
+.viz-card:hover{border-color:rgba(42,127,98,0.35);transform:translateY(-4px)}
+.viz-title{font-family:var(--head-font);font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.viz-sub{font-size:11px;color:var(--muted);margin-bottom:20px}
+.viz-card canvas{width:100%!important;max-height:180px}
+.skill-bar-wrap{display:flex;flex-direction:column;gap:12px}
+.skill-bar-row{display:flex;flex-direction:column;gap:5px}
+.skill-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted2)}
+.skill-bar-label span{font-weight:500;color:var(--accent)}
+.skill-bar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.skill-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.heatmap-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.hmap-cell{aspect-ratio:1;border-radius:2px;background:var(--border);transition:background .3s,transform .2s}
+.hmap-cell:hover{transform:scale(1.3)}
+.hmap-1{background:rgba(42,127,98,0.12)}.hmap-2{background:rgba(42,127,98,0.28)}
+.hmap-3{background:rgba(42,127,98,0.5)}.hmap-4{background:rgba(42,127,98,0.75)}.hmap-5{background:var(--accent)}
+.hmap-legend{display:flex;align-items:center;gap:6px;margin-top:10px;justify-content:flex-end}
+.hmap-legend span{font-size:10px;color:var(--muted)}
+.hmap-legend-cells{display:flex;gap:3px}
+.hmap-legend-cell{width:10px;height:10px;border-radius:1px}
+
+/* ── EXPERIENCE ── */
+#exp-s{background:var(--bg)}
+.exp-list{display:flex;flex-direction:column}
+.exp-item{display:grid;grid-template-columns:200px 1fr;gap:48px;padding:48px 0;border-bottom:1px solid var(--border)}
+.exp-item:first-child{border-top:1px solid var(--border)}
+.em-period{font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.5px;margin-bottom:6px}
+.em-company{font-size:13px;color:var(--muted2);line-height:1.5;font-weight:300;white-space:pre-line}
+.er-role{font-family:var(--head-font);font-size:28px;font-weight:700;color:var(--text);margin-bottom:14px;line-height:1.1}
+.er-desc{font-size:14px;color:var(--muted2);line-height:1.8;margin-bottom:18px;font-weight:300}
+.etags{display:flex;flex-wrap:wrap;gap:8px}
+.etag{background:var(--card);color:var(--muted2);border:1px solid var(--border2);border-radius:var(--radius);padding:4px 12px;font-size:11px;transition:all .2s}
+.etag:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── PROJECTS ── */
+#proj-s{background:var(--surface)}
+.proj-g{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border)}
+.pc{background:var(--surface);padding:40px;position:relative;overflow:hidden;display:flex;flex-direction:column;cursor:none;perspective:1000px}
+.pc-inner{width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);position:relative}
+.pc:hover .pc-inner{transform:rotateY(180deg)}
+.pc-front,.pc-back{position:absolute;top:0;left:0;width:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.pc-front{position:relative;backface-visibility:hidden}
+.pc-back{transform:rotateY(180deg);background:var(--card);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;justify-content:center;height:100%}
+.pc-back-title{font-family:var(--head-font);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:12px}
+.pc-back-body{font-size:13px;color:var(--muted2);line-height:1.7;font-weight:300}
+.pc-back-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.pc-back-tag{background:var(--surface);color:var(--accent);border:1px solid rgba(42,127,98,0.25);border-radius:var(--radius);padding:3px 10px;font-size:11px}
+.pc-num{font-family:var(--head-font);font-size:11px;color:var(--muted);margin-bottom:16px;letter-spacing:2px}
+.pc-cat{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.pc-title{font-family:var(--head-font);font-size:22px;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.2}
+.pc-desc{font-size:13px;color:var(--muted2);line-height:1.7;font-weight:300;flex:1;margin-bottom:20px}
+.ptags{display:flex;flex-wrap:wrap;gap:7px}
+.ptag{background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:var(--radius);padding:3px 10px;font-size:11px}
+.pc-arrow{position:absolute;top:36px;right:36px;color:var(--border2);font-size:20px;transition:all .3s}
+.pc:hover .pc-arrow{color:var(--accent);transform:translate(4px,-4px)}
+.pc::after{content:'Hover to flip ↻';position:absolute;bottom:12px;right:16px;font-size:10px;color:var(--muted);opacity:0;transition:opacity .3s}
+.pc:hover::after{opacity:1}
+
+/* ── RESUME ── */
+#res-s{background:var(--bg)}
+.res-g{display:grid;grid-template-columns:1fr 1fr;gap:72px}
+.res-col h3{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:28px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.ri{margin-bottom:28px}
+.ri-yr{font-size:11px;color:var(--accent);font-weight:600;margin-bottom:4px}
+.ri-title{font-family:var(--head-font);font-size:18px;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1.2}
+.ri-place{font-size:13px;color:var(--muted2);font-weight:300}
+.dl{display:inline-flex;align-items:center;gap:10px;margin-top:40px;background:transparent;color:var(--text);border:1px solid var(--border2);border-radius:var(--radius);padding:13px 26px;font-size:13px;font-weight:500;cursor:none;text-decoration:none;transition:all .25s}
+.dl:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── CONTACT ── */
+#ct-s{background:var(--surface)}
+.ct-g{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.ct-email{font-family:var(--head-font);font-size:clamp(18px,3vw,36px);font-weight:800;color:var(--text);letter-spacing:-1px;margin:12px 0 28px;line-height:1.1;text-decoration:none;display:block;transition:color .2s}
+.ct-email:hover{color:var(--accent)}
+.clinks{display:flex;flex-direction:column}
+.cl{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--border);text-decoration:none;color:var(--muted2);transition:all .2s}
+.cl:first-child{border-top:1px solid var(--border)}
+.cl:hover{color:var(--accent);padding-left:6px}
+.cl:hover .cl-arr{transform:translate(4px,-4px);color:var(--accent)}
+.cl-lbl{font-size:14px;font-weight:500}
+.cl-arr{font-size:18px;transition:all .2s;color:var(--border2)}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:36px;border-top:1px solid var(--border);color:var(--muted);font-size:11px;letter-spacing:.5px}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(28px);transition:opacity var(--anim-speed) ease,transform var(--anim-speed) ease}
+.rv.in{opacity:1;transform:translateY(0)}
+.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.2s}.rv-d3{transition-delay:.3s}
+
+/* ── SEC INDICATOR ── */
+.sec-indicator{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:400;display:flex;flex-direction:column;gap:10px}
+.sec-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);transition:all .3s;cursor:none}
+.sec-dot.active{background:var(--accent);transform:scale(1.5)}
+
+/* ── THEME PRESETS ── */
+body.theme-dark{--bg:#0a0a0a;--surface:#111;--card:#161616;--border:#222;--border2:#2a2a2a;--text:#f0ede6;--muted:#555;--muted2:#888}
+body.theme-slate{--bg:#f0f2f5;--surface:#ffffff;--card:#e8eaed;--border:#d4d8de;--border2:#bfc4cc;--text:#1c2333;--muted:#8a92a0;--muted2:#5a6475}
+body.theme-cream{--bg:#faf6ef;--surface:#fff9f0;--card:#f5ede0;--border:#e8ddd0;--border2:#d8c8b8;--text:#2c1f14;--muted:#a08878;--muted2:#7a6050}
+body.theme-midnight{--bg:#0d1117;--surface:#161b22;--card:#1c2230;--border:#2a3342;--border2:#344055;--text:#e6edf3;--muted:#4a5568;--muted2:#718096}
+
+/* hero backgrounds */
+body.hero-bg-dots .hero-grid{background-image:radial-gradient(circle,var(--accent) 1px,transparent 1px);background-size:32px 32px;opacity:.3}
+body.hero-bg-lines .hero-grid{background-image:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(42,127,98,0.06) 20px,rgba(42,127,98,0.06) 21px)}
+body.hero-bg-none .hero-grid{display:none}
+body.hero-bg-none .hero-glow{display:none}
+
+/* animation speeds */
+body.anim-slow{--anim-speed:1.4s}
+body.anim-fast{--anim-speed:0.4s}
+body.anim-none .rv{opacity:1!important;transform:none!important;transition:none!important}
+body.anim-none .hero-ey,body.anim-none .hero-name,body.anim-none .hero-desc,body.anim-none .hero-btns,body.anim-none .hero-stats{opacity:1!important;transform:none!important;animation:none!important}
+
+/* cursor styles */
+body.cursor-minimal #cur-ring{display:none}
+body.cursor-minimal .trail-dot{display:none}
+body.cursor-dot #cur-ring{display:none}
+body.cursor-off #cur{display:none}
+body.cursor-off{cursor:auto}
+
+/* card styles */
+body.card-hover-lift .pc:hover .pc-inner{transform:none}
+body.card-hover-lift .pc:hover{transform:translateY(-8px);box-shadow:0 20px 48px rgba(0,0,0,0.1);transition:transform .3s,box-shadow .3s}
+body.card-flat .pc{perspective:none}
+body.card-flat .pc:hover .pc-inner{transform:none}
+body.card-flat .pc:hover{background:var(--card)}
+
+@media(max-width:900px){
+  #hero{padding:0 24px 60px}.wrap{padding:72px 24px}
+  .nlinks{display:none}.about-g,.ct-g,.res-g{grid-template-columns:1fr;gap:48px}
+  .photo-frame{display:none}.skills-g{grid-template-columns:1fr}
+  .proj-g{grid-template-columns:1fr}.exp-item{grid-template-columns:1fr;gap:8px}
+  .viz-grid{grid-template-columns:1fr}.hero-stats{gap:28px;flex-wrap:wrap}
+  .sec-indicator{display:none}#edit-fab{bottom:16px;left:16px}
+  #editor{width:100%;border-right:none;border-top:1px solid #e8e4dc}
+}
+</style>
+</head>
+<body class="cursor-off cursor-hover" style="cursor: auto; font-family: Georgia, serif;">
+
+<div id="watermark" style="display: none;"><span>Veerendra Sai Yelubandi</span></div>
+<div id="cur" style="left: 223px; top: 527px;"><div id="cur-ring" style="left: 222.734px; top: 526.966px;"></div><div id="cur-dot"></div><div id="cur-trail"><div class="trail-dot" style="opacity: 0.5; width: 6px; height: 6px; background: rgba(42, 127, 98, 0.5); left: 223px; top: 527px;"></div><div class="trail-dot" style="opacity: 0.4375; width: 5.5px; height: 5.5px; background: rgba(42, 127, 98, 0.45); left: 223px; top: 527px;"></div><div class="trail-dot" style="opacity: 0.375; width: 5px; height: 5px; background: rgba(42, 127, 98, 0.4); left: 222.998px; top: 527px;"></div><div class="trail-dot" style="opacity: 0.3125; width: 4.5px; height: 4.5px; background: rgba(42, 127, 98, 0.35); left: 222.986px; top: 527px;"></div><div class="trail-dot" style="opacity: 0.25; width: 4px; height: 4px; background: rgba(42, 127, 98, 0.3); left: 222.932px; top: 526.999px;"></div><div class="trail-dot" style="opacity: 0.1875; width: 3.5px; height: 3.5px; background: rgba(42, 127, 98, 0.25); left: 222.75px; top: 526.995px;"></div><div class="trail-dot" style="opacity: 0.125; width: 3px; height: 3px; background: rgba(42, 127, 98, 0.2); left: 222.275px; top: 526.979px;"></div><div class="trail-dot" style="opacity: 0.0625; width: 2.5px; height: 2.5px; background: rgba(42, 127, 98, 0.15); left: 221.249px; top: 526.929px;"></div></div></div>
+
+<div class="sec-indicator">
+  <div class="sec-dot active" onclick="goTo('hero')"></div>
+  <div class="sec-dot" onclick="goTo('about-s')"></div>
+  <div class="sec-dot" onclick="goTo('skills-s')"></div>
+  <div class="sec-dot" onclick="goTo('viz-s')"></div>
+  <div class="sec-dot" onclick="goTo('exp-s')"></div>
+  <div class="sec-dot" onclick="goTo('proj-s')"></div>
+  <div class="sec-dot" onclick="goTo('res-s')"></div>
+  <div class="sec-dot" onclick="goTo('ct-s')"></div>
+</div>
+
+<!-- EDITOR FAB -->
+<button id="edit-fab" onclick="toggleEditor()" style="display: none;"><span class="fab-icon">×</span> Close Editor</button>
+
+<!-- EDITOR PANEL -->
+<div id="editor" class="open" style="display: none;">
+  <div class="ed-header">
+    <div><div class="ed-header-title">Portfolio Editor</div><div class="ed-header-sub">Changes apply live — download when done</div></div>
+    <button class="ed-close" onclick="toggleEditor()">×</button>
+  </div>
+  <div class="ed-tabs">
+    <button class="ed-tab" onclick="switchTab('theme')">Theme</button>
+    <button class="ed-tab active" onclick="switchTab('text')">Text</button>
+    <button class="ed-tab" onclick="switchTab('content')">Content</button>
+    <button class="ed-tab" onclick="switchTab('anim')">Animations</button>
+    <button class="ed-tab" onclick="switchTab('layout')">Layout</button>
+  </div>
+  <div class="ed-body">
+
+    <!-- THEME TAB -->
+    <div id="tab-theme" class="tab-content">
+      <div class="ed-section">
+        <div class="ed-section-title">Quick Presets</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <button class="ed-btn" style="background:#f8f7f3;color:#1a1a1a;border:1px solid #e4e0d8;font-size:11px" onclick="applyTheme('light')">Light</button>
+          <button class="ed-btn" style="background:#0a0a0a;color:#f0ede6;font-size:11px" onclick="applyTheme('dark')">Dark</button>
+          <button class="ed-btn" style="background:#f0f2f5;color:#1c2333;border:1px solid #d4d8de;font-size:11px" onclick="applyTheme('slate')">Slate</button>
+          <button class="ed-btn" style="background:#faf6ef;color:#2c1f14;border:1px solid #e8ddd0;font-size:11px" onclick="applyTheme('cream')">Cream</button>
+          <button class="ed-btn" style="background:#0d1117;color:#e6edf3;font-size:11px" onclick="applyTheme('midnight')">Midnight</button>
+          <button class="ed-btn" style="background:#fff;color:#333;border:1px solid #ddd;font-size:11px" onclick="applyTheme('custom')">Custom ↓</button>
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Accent Color</div>
+        <div class="swatch-grid" id="accent-swatches">
+          <div class="swatch active" style="background:#2a7f62" onclick="setAccent('#2a7f62','#1f6b52',this)"></div>
+          <div class="swatch" style="background:#2563eb" onclick="setAccent('#2563eb','#1d4ed8',this)"></div>
+          <div class="swatch" style="background:#7c3aed" onclick="setAccent('#7c3aed','#6d28d9',this)"></div>
+          <div class="swatch" style="background:#dc2626" onclick="setAccent('#dc2626','#b91c1c',this)"></div>
+          <div class="swatch" style="background:#d97706" onclick="setAccent('#d97706','#b45309',this)"></div>
+          <div class="swatch" style="background:#0891b2" onclick="setAccent('#0891b2','#0e7490',this)"></div>
+          <div class="swatch" style="background:#db2777" onclick="setAccent('#db2777','#be185d',this)"></div>
+          <div class="swatch" style="background:#1a1a1a" onclick="setAccent('#1a1a1a','#333',this)"></div>
+        </div>
+        <div class="ed-row" style="margin-top:10px">
+          <div class="ed-label">Custom</div>
+          <input type="color" class="ed-input" id="accent-custom" value="#2a7f62" oninput="setAccentCustom(this.value)">
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Background Color</div>
+        <div class="ed-row">
+          <div class="ed-label">Page BG</div>
+          <input type="color" class="ed-input" id="bg-color" value="#f8f7f3" oninput="setCSSVar('--bg',this.value)">
+        </div>
+        <div class="ed-row">
+          <div class="ed-label">Surface</div>
+          <input type="color" class="ed-input" id="surface-color" value="#ffffff" oninput="setCSSVar('--surface',this.value)">
+        </div>
+        <div class="ed-row">
+          <div class="ed-label">Card</div>
+          <input type="color" class="ed-input" id="card-color" value="#f2f0ea" oninput="setCSSVar('--card',this.value)">
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Hero Background</div>
+        <div class="ed-row">
+          <div class="ed-label">Pattern</div>
+          <select class="ed-select" onchange="setHeroBg(this.value)">
+            <option value="grid">Grid lines</option>
+            <option value="dots">Dot grid</option>
+            <option value="lines">Diagonal lines</option>
+            <option value="none">None (clean)</option>
+          </select>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-label">Glow effect</div>
+          <div class="toggle-switch on" id="glow-toggle" onclick="toggleGlow(this)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEXT TAB -->
+    <div id="tab-text" class="tab-content active">
+      <div class="ed-section">
+        <div class="ed-section-title">Heading Font</div>
+        <select class="ed-select" onchange="setHeadFont(this.value)">
+          <option value="'Syne',sans-serif">Syne (current)</option>
+          <option value="'Playfair Display',serif">Playfair Display</option>
+          <option value="'Fraunces',serif">Fraunces</option>
+          <option value="'Space Grotesk',sans-serif">Space Grotesk</option>
+          <option value="'Inter',sans-serif">Inter</option>
+          <option value="Georgia,serif">Georgia</option>
+        </select>
+        <div class="font-preview" id="head-preview" style="font-family: Fraunces, serif; font-weight: 800;">Veerendra Sai</div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Body Font</div>
+        <select class="ed-select" onchange="setBodyFont(this.value)">
+          <option value="'DM Sans',sans-serif">DM Sans (current)</option>
+          <option value="'Inter',sans-serif">Inter</option>
+          <option value="'Space Grotesk',sans-serif">Space Grotesk</option>
+          <option value="Georgia,serif">Georgia</option>
+          <option value="system-ui,sans-serif">System UI</option>
+        </select>
+        <div class="font-preview" id="body-preview" style="font-family: Georgia, serif;">Data analyst based in Hyderabad</div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Text Colors</div>
+        <div class="ed-row">
+          <div class="ed-label">Primary</div>
+          <input type="color" class="ed-input" value="#1a1a1a" oninput="setCSSVar('--text',this.value)">
+        </div>
+        <div class="ed-row">
+          <div class="ed-label">Muted</div>
+          <input type="color" class="ed-input" value="#6b6760" oninput="setCSSVar('--muted2',this.value)">
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Font Sizes</div>
+        <div class="ed-row">
+          <div class="ed-label">Base size</div>
+          <input type="range" class="ed-input" min="13" max="20" value="16" step="1" oninput="setCSSVar('--base-size',this.value+'px');document.getElementById('base-sz-val').textContent=this.value+'px'">
+          <div class="ed-val" id="base-sz-val">16px</div>
+        </div>
+        <div class="ed-row">
+          <div class="ed-label">Hero name</div>
+          <select class="ed-select" onchange="setCSSVar('--hero-size',this.value)">
+            <option value="clamp(52px,9vw,108px)">XL (default)</option>
+            <option value="clamp(40px,7vw,84px)">L</option>
+            <option value="clamp(32px,5vw,64px)">M</option>
+            <option value="clamp(28px,4vw,52px)">S</option>
+          </select>
+        </div>
+        <div class="ed-row">
+          <div class="ed-label">Border radius</div>
+          <select class="ed-select" onchange="setCSSVar('--radius',this.value)">
+            <option value="2px">Sharp (2px)</option>
+            <option value="6px">Rounded (6px)</option>
+            <option value="12px">Soft (12px)</option>
+            <option value="20px">Pill (20px)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT TAB -->
+    <div id="tab-content" class="tab-content">
+      <div class="ed-section">
+        <div class="ed-section-title">Hero Section</div>
+        <div class="ed-row" style="align-items:flex-start;flex-direction:column;gap:4px">
+          <div class="ed-label">Name line 1</div>
+          <input class="ed-input" style="width:100%" id="c-name1" value="Veerendra Sai" oninput="setContent('hname1',this.value)">
+        </div>
+        <div class="ed-row" style="align-items:flex-start;flex-direction:column;gap:4px;margin-top:8px">
+          <div class="ed-label">Name line 2 (accent)</div>
+          <input class="ed-input" style="width:100%" id="c-name2" value="Yelubandi" oninput="setContent('hname2',this.value)">
+        </div>
+        <div class="ed-row" style="align-items:flex-start;flex-direction:column;gap:4px;margin-top:8px">
+          <div class="ed-label">Tagline</div>
+          <input class="ed-input" style="width:100%" id="c-tag" value="Data Analyst · Hyderabad, India" oninput="setContent('heroTag',this.value)">
+        </div>
+        <div class="ed-row" style="align-items:flex-start;flex-direction:column;gap:4px;margin-top:8px">
+          <div class="ed-label">Bio text</div>
+          <textarea class="ed-textarea" id="c-bio" oninput="setHTML('heroBio',this.value)">Turning raw data into &lt;strong&gt;clear decisions&lt;/strong&gt;. I specialise in building dashboards, uncovering patterns in complex datasets, and communicating insights that actually move the needle.</textarea>
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Stats</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="stats-editor">
+          <input class="ed-input" placeholder="Value" value="4+" oninput="updateStat(0,'n',this.value)">
+          <input class="ed-input" placeholder="Label" value="Years Experience" oninput="updateStat(0,'l',this.value)">
+          <input class="ed-input" placeholder="Value" value="30+" oninput="updateStat(1,'n',this.value)">
+          <input class="ed-input" placeholder="Label" value="Dashboards Built" oninput="updateStat(1,'l',this.value)">
+          <input class="ed-input" placeholder="Value" value="5" oninput="updateStat(2,'n',this.value)">
+          <input class="ed-input" placeholder="Label" value="Tools Mastered" oninput="updateStat(2,'l',this.value)">
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Logo text</div>
+        <input class="ed-input" style="width:100%" value="VSY" oninput="setContent('logoText',this.value)">
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Contact Email</div>
+        <input class="ed-input" style="width:100%" value="veerendrasai0704@gmail.com" oninput="setContent('ctEmailText',this.value);document.getElementById('ctEmailLink').href='mailto:'+this.value">
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Inline content editing</div>
+        <p style="font-size:11px;color:#999;line-height:1.6">Click the <strong style="color:#2a7f62">✏ Edit Portfolio</strong> button again to close this panel, then <strong>click any text directly</strong> on the page to edit it inline.</p>
+      </div>
+    </div>
+
+    <!-- ANIMATIONS TAB -->
+    <div id="tab-anim" class="tab-content">
+      <div class="ed-section">
+        <div class="ed-section-title">Scroll Reveal</div>
+        <div class="ed-row">
+          <div class="ed-label">Speed</div>
+          <select class="ed-select" onchange="setAnimSpeed(this.value)">
+            <option value="normal">Normal (0.8s)</option>
+            <option value="slow">Slow (1.4s)</option>
+            <option value="fast">Fast (0.4s)</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-label">Enable scroll reveal</div>
+          <div class="toggle-switch on" id="reveal-toggle" onclick="toggleReveal(this)"></div>
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Hero Animations</div>
+        <div class="toggle-row">
+          <div class="toggle-label">Fade-up on load</div>
+          <div class="toggle-switch on" id="hero-anim-toggle" onclick="toggleHeroAnim(this)"></div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-label">Glow pulse</div>
+          <div class="toggle-switch on" id="glow-anim-toggle" onclick="toggleGlowAnim(this)"></div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-label">Marquee scroll</div>
+          <div class="toggle-switch on" id="marquee-toggle" onclick="toggleMarquee(this)"></div>
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Cursor Style</div>
+        <div class="ed-row">
+          <div class="ed-label">Style</div>
+          <select class="ed-select" onchange="setCursorStyle(this.value)">
+            <option value="full">Full (dot + ring + trail)</option>
+            <option value="minimal">Minimal (dot only)</option>
+            <option value="dot">Dot (no ring)</option>
+            <option value="off">Off (default cursor)</option>
+          </select>
+        </div>
+        <div class="ed-row">
+          <div class="ed-label">Cursor color</div>
+          <input type="color" class="ed-input" value="#2a7f62" oninput="setCursorColor(this.value)">
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Project Cards</div>
+        <div class="ed-row">
+          <div class="ed-label">Hover effect</div>
+          <select class="ed-select" onchange="setCardStyle(this.value)">
+            <option value="flip">3D Flip (reveal back)</option>
+            <option value="lift">Lift up</option>
+            <option value="flat">Flat highlight</option>
+          </select>
+        </div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Watermark</div>
+        <div class="toggle-row">
+          <div class="toggle-label">Show watermark</div>
+          <div class="toggle-switch" id="wm-toggle" onclick="toggleWatermark(this)"></div>
+        </div>
+        <div class="ed-row">
+          <div class="ed-label">Opacity</div>
+          <input type="range" class="ed-input" min="1" max="15" value="5" step="1" oninput="setWatermarkOpacity(this.value);document.getElementById('wm-val').textContent=this.value+'%'">
+          <div class="ed-val" id="wm-val">5%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYOUT TAB -->
+    <div id="tab-layout" class="tab-content">
+      <div class="ed-section">
+        <div class="ed-section-title">Section Visibility</div>
+        <div class="toggle-row"><div class="toggle-label">About section</div><div class="toggle-switch on" onclick="toggleSection('about-s',this)"></div></div>
+        <div class="toggle-row"><div class="toggle-label">Skills section</div><div class="toggle-switch on" onclick="toggleSection('skills-s',this)"></div></div>
+        <div class="toggle-row"><div class="toggle-label">Analytics / Charts</div><div class="toggle-switch on" onclick="toggleSection('viz-s',this)"></div></div>
+        <div class="toggle-row"><div class="toggle-label">Experience section</div><div class="toggle-switch on" onclick="toggleSection('exp-s',this)"></div></div>
+        <div class="toggle-row"><div class="toggle-label">Projects section</div><div class="toggle-switch on" onclick="toggleSection('proj-s',this)"></div></div>
+        <div class="toggle-row"><div class="toggle-label">Resume section</div><div class="toggle-switch on" onclick="toggleSection('res-s',this)"></div></div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Nav</div>
+        <div class="toggle-row"><div class="toggle-label">Floating pill nav</div><div class="toggle-switch on" onclick="toggleEl('nav-wrap',this)"></div></div>
+        <div class="toggle-row"><div class="toggle-label">Section dot nav</div><div class="toggle-switch on" onclick="toggleEl('sec-indicator-wrap',this)"></div></div>
+      </div>
+      <div class="ed-section">
+        <div class="ed-section-title">Section spacing</div>
+        <div class="ed-row">
+          <div class="ed-label">Padding</div>
+          <select class="ed-select" onchange="setSectionPadding(this.value)">
+            <option value="100px 64px">Normal</option>
+            <option value="72px 48px">Compact</option>
+            <option value="140px 80px">Spacious</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ed-footer">
+    <button class="ed-btn ed-btn-reset" onclick="resetAll()">↺ Reset</button>
+    <button class="ed-btn ed-btn-save" onclick="saveHTML()">↓ Download HTML</button>
+  </div>
+</div>
+
+<!-- FLOATING NAV -->
+<div id="nav-wrap">
+  <nav id="nav" class="scrolled">
+    <a href="#hero" class="nlogo"><span id="logoText">VSY</span><em>.</em></a>
+    <ul class="nlinks">
+      <li><a href="#about-s">About</a></li>
+      <li><a href="#skills-s">Skills</a></li>
+      <li><a href="#viz-s">Analytics</a></li>
+      <li><a href="#exp-s">Experience</a></li>
+      <li><a href="#proj-s">Projects</a></li>
+      <li><a href="#ct-s">Contact</a></li>
+    </ul>
+    <button class="ncta" onclick="document.getElementById('ct-s').scrollIntoView({behavior:'smooth'})">Hire Me</button>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-ey" id="heroTag">Data Analyst · Hyderabad, India</div>
+    <h1 class="hero-name"><span id="hname1" contenteditable="true">Veerendra Sai</span><span class="ln2" id="hname2" contenteditable="true">Yelubandi</span></h1>
+    <p class="hero-desc" id="heroBio" contenteditable="true">Turning raw data into <strong>clear decisions</strong>. I specialise in building dashboards, uncovering patterns in complex datasets, and communicating insights that actually move the needle.</p>
+    <div class="hero-btns">
+      <a href="#proj-s" class="btn-prim">View Projects</a>
+      <a href="#ct-s" class="btn-ghost">Get in Touch</a>
+    </div>
+    <div class="hero-stats" id="heroStats">
+      <div><div class="hstat-n" id="stat0n">4<em>+</em></div><div class="hstat-l" id="stat0l">Years Experience</div></div>
+      <div><div class="hstat-n" id="stat1n">30<em>+</em></div><div class="hstat-l" id="stat1l">Dashboards Built</div></div>
+      <div><div class="hstat-n" id="stat2n">5</div><div class="hstat-l" id="stat2l">Tools Mastered</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-wrap" id="marqueeWrap">
+  <div class="marquee-track">
+    <span class="marquee-item"><em>✦</em> SQL</span><span class="marquee-item"><em>✦</em> Python</span>
+    <span class="marquee-item"><em>✦</em> Power BI</span><span class="marquee-item"><em>✦</em> Data Analysis</span>
+    <span class="marquee-item"><em>✦</em> Excel</span><span class="marquee-item"><em>✦</em> Machine Learning</span>
+    <span class="marquee-item"><em>✦</em> DAX</span><span class="marquee-item"><em>✦</em> ETL Pipelines</span>
+    <span class="marquee-item"><em>✦</em> Pandas</span><span class="marquee-item"><em>✦</em> Scikit-learn</span>
+    <span class="marquee-item"><em>✦</em> SQL</span><span class="marquee-item"><em>✦</em> Python</span>
+    <span class="marquee-item"><em>✦</em> Power BI</span><span class="marquee-item"><em>✦</em> Data Analysis</span>
+    <span class="marquee-item"><em>✦</em> Excel</span><span class="marquee-item"><em>✦</em> Machine Learning</span>
+    <span class="marquee-item"><em>✦</em> DAX</span><span class="marquee-item"><em>✦</em> ETL Pipelines</span>
+    <span class="marquee-item"><em>✦</em> Pandas</span><span class="marquee-item"><em>✦</em> Scikit-learn</span>
+  </div>
+</div>
+
+<div id="about-s" class="wrap rv in" style="padding: 100px 64px;">
+  <div class="sec-tag">About Me</div>
+  <h2 class="sec-title" contenteditable="true">Data is the story.<br><em>I write the narrative.</em></h2>
+  <div class="about-g">
+    <div>
+      <div class="about-text rv rv-d1 in">
+        <p contenteditable="true">I'm a Data Analyst with <strong>3–5 years of experience</strong> turning complex data into clear, actionable insights. I work across Python, SQL, Power BI, and Excel — building dashboards, writing clean queries, and helping teams make smarter decisions.</p>
+        <p contenteditable="true">Based in Hyderabad, I'm currently open to <strong>Data Analyst and Analytics Engineer roles</strong> where good work actually matters.</p>
+      </div>
+      <div class="akv rv rv-d2 in">
+        <div class="akvr"><div class="akvk">Current Role</div><div class="akvv" contenteditable="true">Data Analyst</div></div>
+        <div class="akvr"><div class="akvk">Company</div><div class="akvv" contenteditable="true">MED MANOR Organics Pvt. Ltd.</div></div>
+        <div class="akvr"><div class="akvk">Location</div><div class="akvv" contenteditable="true">Hyderabad, Telangana, India</div></div>
+        <div class="akvr"><div class="akvk">Core Stack</div><div class="akvv" contenteditable="true">Python · SQL · Power BI · Excel · DAX</div></div>
+        <div class="akvr"><div class="akvk">Email</div><div class="akvv" contenteditable="true">veerendrasai0704@gmail.com</div></div>
+        <div class="akvr"><div class="akvk">Open To</div><div class="akvv" contenteditable="true">Full-time &amp; Freelance opportunities</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="photo-frame rv rv-d1 in" onclick="document.getElementById('photoIn').click()">
+        <div class="phph" id="phph"><span class="pi">◉</span><span class="pt">Upload Photo</span></div>
+      </div>
+      <input type="file" id="photoIn" accept="image/*" style="display:none" onchange="loadPhoto(event)">
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div id="skills-s" class="wrap rv in" style="padding: 100px 64px;">
+  <div class="sec-tag">Technical Skills</div>
+  <h2 class="sec-title">Tools &amp; <em>Technologies</em></h2>
+  <div class="skills-g rv rv-d1 in">
+    <div class="sc"><div class="sc-cat" contenteditable="true">Analysis</div><div class="sc-title" contenteditable="true">Data Analysis</div><div class="slist"><div class="sr" contenteditable="true">Python (Pandas, NumPy)</div><div class="sr" contenteditable="true">SQL (MySQL, PostgreSQL)</div><div class="sr" contenteditable="true">Excel (Pivot, VLOOKUP, DAX)</div><div class="sr" contenteditable="true">Statistical Analysis</div><div class="sr" contenteditable="true">Data Cleaning / ETL</div></div></div>
+    <div class="sc"><div class="sc-cat" contenteditable="true">Visualise</div><div class="sc-title" contenteditable="true">BI &amp; Dashboards</div><div class="slist"><div class="sr" contenteditable="true">Power BI</div><div class="sr" contenteditable="true">Matplotlib / Seaborn</div><div class="sr" contenteditable="true">Plotly</div><div class="sr" contenteditable="true">Excel Charts</div><div class="sr" contenteditable="true">Report Automation</div></div></div>
+    <div class="sc"><div class="sc-cat" contenteditable="true">ML &amp; AI</div><div class="sc-title" contenteditable="true">Machine Learning</div><div class="slist"><div class="sr" contenteditable="true">Scikit-learn</div><div class="sr" contenteditable="true">Regression &amp; Classification</div><div class="sr" contenteditable="true">Clustering (K-Means)</div><div class="sr" contenteditable="true">Feature Engineering</div><div class="sr" contenteditable="true">Model Evaluation</div></div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div id="viz-s" class="wrap rv in" style="padding: 100px 64px;">
+  <div class="sec-tag">Data Insights</div>
+  <h2 class="sec-title">Analytics <em>Overview</em></h2>
+  <div class="viz-grid">
+    <div class="viz-card rv rv-d1 in"><div class="viz-title">Skill Proficiency</div><div class="viz-sub">Self-assessed expertise level</div><div class="skill-bar-wrap"><div class="skill-bar-row"><div class="skill-bar-label"><span style="color:var(--muted2)">SQL</span><span>92%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="92" style="width: 92%;"></div></div></div><div class="skill-bar-row"><div class="skill-bar-label"><span style="color:var(--muted2)">Power BI</span><span>90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="90" style="width: 90%;"></div></div></div><div class="skill-bar-row"><div class="skill-bar-label"><span style="color:var(--muted2)">Python</span><span>85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="85" style="width: 85%;"></div></div></div><div class="skill-bar-row"><div class="skill-bar-label"><span style="color:var(--muted2)">Excel / DAX</span><span>88%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="88" style="width: 88%;"></div></div></div><div class="skill-bar-row"><div class="skill-bar-label"><span style="color:var(--muted2)">Machine Learning</span><span>72%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="72" style="width: 72%;"></div></div></div><div class="skill-bar-row"><div class="skill-bar-label"><span style="color:var(--muted2)">ETL / Pipelines</span><span>80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="80" style="width: 80%;"></div></div></div></div></div>
+    <div class="viz-card rv rv-d2 in"><div class="viz-title">Competency Radar</div><div class="viz-sub">Across key analyst dimensions</div><canvas id="radarChart" width="412" height="270" style="display: block; box-sizing: border-box; height: 180px; width: 274px;"></canvas></div>
+    <div class="viz-card rv rv-d3 in"><div class="viz-title">Project Focus Areas</div><div class="viz-sub">By domain category</div><canvas id="donutChart" width="412" height="270" style="display: block; box-sizing: border-box; height: 180px; width: 274px;"></canvas></div>
+    <div class="viz-card rv rv-d1 in" style="grid-column:span 2"><div class="viz-title">Tools Used Over Time</div><div class="viz-sub">Usage intensity by year (2020–2025)</div><canvas id="timelineChart" style="max-height: 160px; display: block; box-sizing: border-box; height: 160px; width: 618px;" width="928" height="240"></canvas></div>
+    <div class="viz-card rv rv-d2 in"><div class="viz-title">Activity Heatmap</div><div class="viz-sub">Project &amp; learning activity</div><div class="heatmap-grid" id="heatmapGrid"><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-5"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-4"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-4"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-5"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-4"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-4"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-4"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-5"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-4"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-4"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-4"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-5"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-5"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-5"></div><div class="hmap-cell"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-3"></div><div class="hmap-cell hmap-1"></div><div class="hmap-cell hmap-2"></div><div class="hmap-cell"></div></div><div class="hmap-legend"><span>Less</span><div class="hmap-legend-cells"><div class="hmap-legend-cell" style="background:var(--border)"></div><div class="hmap-legend-cell hmap-1"></div><div class="hmap-legend-cell hmap-2"></div><div class="hmap-legend-cell hmap-3"></div><div class="hmap-legend-cell hmap-5"></div></div><span>More</span></div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div id="exp-s" class="wrap rv in" style="padding: 100px 64px;">
+  <div class="sec-tag">Career</div>
+  <h2 class="sec-title">Work <em>Experience</em></h2>
+  <div class="exp-list">
+    <div class="exp-item rv rv-d1 in"><div><div class="em-period" contenteditable="true">2022 – Present</div><div class="em-company" contenteditable="true">MED MANOR Organics Pvt. Ltd.
+Hyderabad</div></div><div><div class="er-role" contenteditable="true">Data Analyst</div><div class="er-desc" contenteditable="true">Own the end-to-end reporting pipeline for HR, Sales, and Operations. Built automated dashboards that eliminated 10+ hours of weekly manual work, and designed the company's first structured helpdesk analytics system.</div><div class="etags"><span class="etag" contenteditable="true">Power BI</span><span class="etag" contenteditable="true">Python</span><span class="etag" contenteditable="true">SQL</span><span class="etag" contenteditable="true">Excel</span><span class="etag" contenteditable="true">Process Automation</span></div></div></div>
+    <div class="exp-item rv rv-d2 in"><div><div class="em-period" contenteditable="true">2020 – 2022</div><div class="em-company" contenteditable="true">Previous Organisation
+Hyderabad</div></div><div><div class="er-role" contenteditable="true">Associate Software Engineer</div><div class="er-desc" contenteditable="true">Supported the analytics team in producing weekly and monthly business reports. Built Excel models for sales forecasting and assisted in migrating legacy spreadsheet reports to Power BI dashboards.</div><div class="etags"><span class="etag" contenteditable="true">Excel</span><span class="etag" contenteditable="true">Power BI</span><span class="etag" contenteditable="true">SQL</span><span class="etag" contenteditable="true">Data Modelling</span></div></div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div id="proj-s" class="wrap rv in" style="padding: 100px 64px;">
+  <div class="sec-tag">Selected Work</div>
+  <h2 class="sec-title">Projects &amp; <em>Initiatives</em></h2>
+  <p style="font-size:12px;color:var(--muted);margin-top:-36px;margin-bottom:40px">Hover each card to flip and see details</p>
+  <div class="proj-g">
+    <div class="pc"><div class="pc-inner"><div class="pc-front"><div class="pc-arrow">↗</div><div class="pc-num" contenteditable="true">01</div><div class="pc-cat" contenteditable="true">HR Analytics</div><div class="pc-title" contenteditable="true">Helpdesk Ticket Report Dashboard</div><div class="pc-desc" contenteditable="true">Automated daily and open-ticket reporting for a 14,000+ ticket dataset. Replaced 1 hour of manual work with a drag-and-drop CSV upload tool.</div><div class="ptags"><span class="ptag" contenteditable="true">Python</span><span class="ptag" contenteditable="true">CSV Parsing</span><span class="ptag" contenteditable="true">HTML/JS</span><span class="ptag" contenteditable="true">Data Viz</span></div></div><div class="pc-back"><div class="pc-back-title">Impact &amp; Details</div><div class="pc-back-body" contenteditable="true">Renders account-wise, agent-wise, and tag-wise reports in seconds. Eliminated 1 hour of daily manual work for the HR team managing 14,000+ helpdesk tickets. Built entirely with vanilla Python and JS — no external BI tool needed.</div><div class="pc-back-tags"><span class="pc-back-tag">Python</span><span class="pc-back-tag">CSV Parsing</span><span class="pc-back-tag">HTML/JS</span><span class="pc-back-tag">Data Visualisation</span></div></div></div></div>
+    <div class="pc"><div class="pc-inner"><div class="pc-front"><div class="pc-arrow">↗</div><div class="pc-num" contenteditable="true">02</div><div class="pc-cat" contenteditable="true">Process Automation</div><div class="pc-title" contenteditable="true">Monthly Indent Automation System</div><div class="pc-desc" contenteditable="true">Digitised the paper-based stationery indent process across all departments. Zero manual follow-up required after implementation.</div><div class="ptags"><span class="ptag" contenteditable="true">HTML/JS</span><span class="ptag" contenteditable="true">Sheets API</span><span class="ptag" contenteditable="true">EmailJS</span><span class="ptag" contenteditable="true">Workflow</span></div></div><div class="pc-back"><div class="pc-back-title">Impact &amp; Details</div><div class="pc-back-body" contenteditable="true">Web form auto-emails the facilities team and logs every submission to Google Sheets — removing the need for any manual data entry or follow-up.</div><div class="pc-back-tags"><span class="pc-back-tag">HTML/JS</span><span class="pc-back-tag">Google Sheets API</span><span class="pc-back-tag">EmailJS</span><span class="pc-back-tag">Workflow Design</span></div></div></div></div>
+    <div class="pc"><div class="pc-inner"><div class="pc-front"><div class="pc-arrow">↗</div><div class="pc-num" contenteditable="true">03</div><div class="pc-cat" contenteditable="true">Sales Analytics</div><div class="pc-title" contenteditable="true">Sales Performance Power BI Dashboard</div><div class="pc-desc" contenteditable="true">Interactive Power BI report tracking TSO-wise primary and secondary sales, target vs achievement, and territory performance.</div><div class="ptags"><span class="ptag" contenteditable="true">Power BI</span><span class="ptag" contenteditable="true">DAX</span><span class="ptag" contenteditable="true">SQL</span><span class="ptag" contenteditable="true">Excel</span></div></div><div class="pc-back"><div class="pc-back-title">Impact &amp; Details</div><div class="pc-back-body" contenteditable="true">Reduced time to insight from 2 full days to under 10 minutes. Stakeholders can now self-serve any territory or TSO performance view without waiting for weekly reports.</div><div class="pc-back-tags"><span class="pc-back-tag">Power BI</span><span class="pc-back-tag">DAX</span><span class="pc-back-tag">SQL</span><span class="pc-back-tag">Excel</span></div></div></div></div>
+    <div class="pc"><div class="pc-inner"><div class="pc-front"><div class="pc-arrow">↗</div><div class="pc-num" contenteditable="true">04</div><div class="pc-cat" contenteditable="true">Predictive Analytics</div><div class="pc-title" contenteditable="true">Attrition Prediction Model</div><div class="pc-desc" contenteditable="true">Logistic regression model to predict employee attrition risk using HR data, with 82% cross-validated accuracy.</div><div class="ptags"><span class="ptag" contenteditable="true">Python</span><span class="ptag" contenteditable="true">Scikit-learn</span><span class="ptag" contenteditable="true">Pandas</span><span class="ptag" contenteditable="true">HR Analytics</span></div></div><div class="pc-back"><div class="pc-back-title">Impact &amp; Details</div><div class="pc-back-body" contenteditable="true">Surfaced top drivers of employee exit and recommended targeted retention interventions. 82% cross-validated accuracy on 15+ HR variables.</div><div class="pc-back-tags"><span class="pc-back-tag">Python</span><span class="pc-back-tag">Scikit-learn</span><span class="pc-back-tag">Pandas</span><span class="pc-back-tag">HR Analytics</span></div></div></div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div id="res-s" class="wrap rv in" style="padding: 100px 64px;">
+  <div class="sec-tag">Background</div>
+  <h2 class="sec-title">Education &amp; <em>Certifications</em></h2>
+  <div class="res-g">
+    <div class="rv rv-d1 in"><h3>Education</h3><div class="ri"><div class="ri-yr" contenteditable="true">2016 – 2020</div><div class="ri-title" contenteditable="true">B.Tech / B.E — Computer Science</div><div class="ri-place" contenteditable="true">University Name, Hyderabad</div></div></div>
+    <div class="rv rv-d2 in"><h3>Certifications</h3><div class="ri"><div class="ri-yr" contenteditable="true">2024</div><div class="ri-title" contenteditable="true">Microsoft Power BI Data Analyst (PL-300)</div><div class="ri-place" contenteditable="true">Microsoft</div></div><div class="ri"><div class="ri-yr" contenteditable="true">2023</div><div class="ri-title" contenteditable="true">Google Data Analytics Certificate</div><div class="ri-place" contenteditable="true">Google / Coursera</div></div><div class="ri"><div class="ri-yr" contenteditable="true">2022</div><div class="ri-title" contenteditable="true">Python for Data Science and AI</div><div class="ri-place" contenteditable="true">IBM / Coursera</div></div></div>
+  </div>
+  <a href="#" class="dl rv rv-d2 in">↓ Download Resume</a>
+</div>
+
+<div class="divider"></div>
+
+<div id="ct-s" class="wrap rv in" style="padding: 100px 64px;">
+  <div class="sec-tag">Contact</div>
+  <div class="ct-g">
+    <div>
+      <h2 class="sec-title" contenteditable="true">Let's talk<br><em>data.</em></h2>
+      <p style="color:var(--muted2);font-size:14px;font-weight:300" contenteditable="true">Open to analytics roles, freelance projects, and interesting data conversations. Reach out any time.</p>
+      <a href="mailto:veerendrasai0704@gmail.com" class="ct-email" id="ctEmailLink"><span id="ctEmailText" contenteditable="true">veerendrasai0704@gmail.com</span></a>
+    </div>
+    <div>
+      <div class="clinks">
+        <a href="https://www.linkedin.com/in/veerendrasai7/" class="cl" target="_blank"><span class="cl-lbl" contenteditable="true">LinkedIn</span><span class="cl-arr">↗</span></a>
+        <a href="https://github.com/veeru74/VeerendraSai" class="cl" target="_blank"><span class="cl-lbl" contenteditable="true">GitHub</span><span class="cl-arr">↗</span></a>
+        <a href="mailto:veerendrasai0704@gmail.com" class="cl"><span class="cl-lbl" contenteditable="true">Email</span><span class="cl-arr">→</span></a>
+        <a href="#" class="cl"><span class="cl-lbl" contenteditable="true">Resume PDF</span><span class="cl-arr">↓</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer contenteditable="true">Veerendra Sai Yelubandi — Data Analyst Portfolio © <span id="yr">2026</span></footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ── CURSOR ──
+const curDot=document.getElementById('cur-dot'),curRing=document.getElementById('cur-ring'),curTrail=document.getElementById('cur-trail'),cur=document.getElementById('cur');
+let mx=0,my=0,ringX=0,ringY=0;
+const trail=[];
+for(let i=0;i<8;i++){
+  const d=document.createElement('div');d.className='trail-dot';
+  d.style.cssText=`opacity:${(1-i/8)*0.5};width:${6-i*0.5}px;height:${6-i*0.5}px;background:rgba(42,127,98,${0.5-i*0.05})`;
+  curTrail.appendChild(d);trail.push({el:d,x:0,y:0});
+}
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+function animCursor(){
+  ringX+=(mx-ringX)*.14;ringY+=(my-ringY)*.14;
+  curRing.style.left=ringX+'px';curRing.style.top=ringY+'px';
+  for(let i=trail.length-1;i>0;i--){trail[i].x+=(trail[i-1].x-trail[i].x)*.35;trail[i].y+=(trail[i-1].y-trail[i].y)*.35;trail[i].el.style.left=trail[i].x+'px';trail[i].el.style.top=trail[i].y+'px'}
+  trail[0].x+=(mx-trail[0].x)*.5;trail[0].y+=(my-trail[0].y)*.5;trail[0].el.style.left=trail[0].x+'px';trail[0].el.style.top=trail[0].y+'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a,button,.pc,.viz-card,.sc,.ed-btn,.ed-tab,.swatch,.toggle-switch').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-hover'));el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-hover'))});
+
+// ── NAV ──
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60));
+
+// ── SECTION DOTS ──
+const secIds=['hero','about-s','skills-s','viz-s','exp-s','proj-s','res-s','ct-s'];
+const dots=document.querySelectorAll('.sec-dot');
+function goTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+function updateDots(){const pos=window.scrollY+window.innerHeight/2;let a=0;secIds.forEach((id,i)=>{const el=document.getElementById(id);if(el&&el.offsetTop<=pos)a=i});dots.forEach((d,i)=>d.classList.toggle('active',i===a))}
+window.addEventListener('scroll',updateDots);
+
+// ── REVEAL ──
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');if(e.target.closest('#viz-s'))setTimeout(triggerBars,300)}})},{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// ── PHOTO ──
+function loadPhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{document.querySelector('.photo-frame').innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover">`};r.readAsDataURL(f)}
+
+// ── CHARTS ──
+Chart.defaults.color='#9a9590';Chart.defaults.borderColor='#e4e0d8';Chart.defaults.font.family="'DM Sans',sans-serif";
+new Chart(document.getElementById('radarChart'),{type:'radar',data:{labels:['SQL','Power BI','Python','Excel/DAX','Statistics','ML'],datasets:[{data:[92,90,85,88,80,72],backgroundColor:'rgba(42,127,98,0.1)',borderColor:'#2a7f62',borderWidth:2,pointBackgroundColor:'#2a7f62',pointRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:100,grid:{color:'rgba(0,0,0,0.06)'},angleLines:{color:'rgba(0,0,0,0.06)'},ticks:{display:false},pointLabels:{color:'#666',font:{size:11}}}}}});
+new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['HR Analytics','Sales Analytics','Process Automation','Predictive ML'],datasets:[{data:[35,30,20,15],backgroundColor:['#2a7f62','#3d9e7e','#68c4a4','#a8e0cf'],borderColor:'#fff',borderWidth:3,hoverOffset:6}]},options:{responsive:true,cutout:'68%',plugins:{legend:{position:'bottom',labels:{color:'#666',font:{size:10},padding:14,boxWidth:10}}}}});
+new Chart(document.getElementById('timelineChart'),{type:'bar',data:{labels:['2020','2021','2022','2023','2024','2025'],datasets:[{label:'SQL',data:[60,65,80,85,90,92],backgroundColor:'rgba(42,127,98,0.85)',borderRadius:3,borderSkipped:false},{label:'Power BI',data:[30,55,70,82,88,90],backgroundColor:'rgba(42,127,98,0.45)',borderRadius:3,borderSkipped:false},{label:'Python',data:[40,50,60,72,80,85],backgroundColor:'rgba(42,127,98,0.25)',borderRadius:3,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{labels:{color:'#666',font:{size:10},boxWidth:10,padding:12}}},scales:{x:{grid:{display:false},ticks:{color:'#9a9590'}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#9a9590',font:{size:10}},max:100}}}});
+const hm=document.getElementById('heatmapGrid');
+const lv=[0,1,2,3,4,5],wt=[20,15,12,10,8,5];
+function rl(){let r=Math.random()*70,c=0;for(let i=0;i<wt.length;i++){c+=wt[i];if(r<c)return lv[i]}return 0}
+for(let i=0;i<84;i++){const d=document.createElement('div');d.className='hmap-cell';const l=rl();if(l>0)d.classList.add('hmap-'+l);hm.appendChild(d)}
+function triggerBars(){document.querySelectorAll('.skill-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%')}
+
+// ── EDITOR ──
+let edOpen=false;
+function toggleEditor(){
+  edOpen=!edOpen;
+  document.getElementById('editor').classList.toggle('open',edOpen);
+  document.getElementById('edit-fab').innerHTML=edOpen?'<span class="fab-icon">×</span> Close Editor':'<span class="fab-icon">✏</span> Edit Portfolio';
+}
+function switchTab(name){
+  document.querySelectorAll('.ed-tab').forEach((t,i)=>t.classList.toggle('active',t.getAttribute('onclick').includes("'"+name+"'")));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));
+}
+
+// ── THEME PRESETS ──
+const themes={
+  light:{bg:'#f8f7f3',surface:'#ffffff',card:'#f2f0ea',border:'#e4e0d8',border2:'#d0ccc2',text:'#1a1a1a',muted:'#9a9590',muted2:'#6b6760'},
+  dark:{bg:'#0a0a0a',surface:'#111111',card:'#161616',border:'#222222',border2:'#2a2a2a',text:'#f0ede6',muted:'#555555',muted2:'#888888'},
+  slate:{bg:'#f0f2f5',surface:'#ffffff',card:'#e8eaed',border:'#d4d8de',border2:'#bfc4cc',text:'#1c2333',muted:'#8a92a0',muted2:'#5a6475'},
+  cream:{bg:'#faf6ef',surface:'#fff9f0',card:'#f5ede0',border:'#e8ddd0',border2:'#d8c8b8',text:'#2c1f14',muted:'#a08878',muted2:'#7a6050'},
+  midnight:{bg:'#0d1117',surface:'#161b22',card:'#1c2230',border:'#2a3342',border2:'#344055',text:'#e6edf3',muted:'#4a5568',muted2:'#718096'},
+};
+function applyTheme(name){
+  const t=themes[name];if(!t)return;
+  const r=document.documentElement;
+  Object.entries(t).forEach(([k,v])=>r.style.setProperty('--'+k,v));
+  document.getElementById('bg-color').value=t.bg;
+  document.getElementById('surface-color').value=t.surface;
+  document.getElementById('card-color').value=t.card;
+}
+function setCSSVar(v,val){document.documentElement.style.setProperty(v,val)}
+function setAccent(c,c2,el){
+  setCSSVar('--accent',c);setCSSVar('--accent2',c2);
+  document.getElementById('accent-custom').value=c;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+}
+function setAccentCustom(c){setCSSVar('--accent',c);setCSSVar('--accent2',c);document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'))}
+
+// ── HERO BG ──
+function setHeroBg(v){
+  document.body.classList.remove('hero-bg-dots','hero-bg-lines','hero-bg-none');
+  if(v==='dots')document.body.classList.add('hero-bg-dots');
+  else if(v==='lines')document.body.classList.add('hero-bg-lines');
+  else if(v==='none')document.body.classList.add('hero-bg-none');
+}
+function toggleGlow(el){el.classList.toggle('on');document.querySelector('.hero-glow').style.display=el.classList.contains('on')?'':'none'}
+
+// ── FONTS ──
+function setHeadFont(f){
+  setCSSVar('--head-font',f);
+  document.getElementById('head-preview').style.fontFamily=f;
+}
+function setBodyFont(f){
+  setCSSVar('--body-font',f);
+  document.body.style.fontFamily=f;
+  document.getElementById('body-preview').style.fontFamily=f;
+}
+
+// ── CONTENT ──
+function setContent(id,v){const el=document.getElementById(id);if(el)el.textContent=v}
+function setHTML(id,v){const el=document.getElementById(id);if(el)el.innerHTML=v}
+function updateStat(i,k,v){
+  const el=document.getElementById('stat'+i+k);
+  if(!el)return;
+  if(k==='n')el.innerHTML=v+'<em>'+( v.includes('+')? '' :''  )+'</em>';
+  else el.textContent=v;
+}
+
+// ── ANIMATIONS ──
+function setAnimSpeed(v){
+  document.body.classList.remove('anim-slow','anim-fast','anim-none');
+  if(v==='slow')document.body.classList.add('anim-slow');
+  else if(v==='fast')document.body.classList.add('anim-fast');
+  else if(v==='off')document.body.classList.add('anim-none');
+}
+function toggleReveal(el){el.classList.toggle('on');document.querySelectorAll('.rv:not(.in)').forEach(e=>{if(!el.classList.contains('on'))e.style.opacity='1'})}
+function toggleHeroAnim(el){el.classList.toggle('on');const off=!el.classList.contains('on');['.hero-ey','.hero-name','.hero-desc','.hero-btns','.hero-stats'].forEach(s=>{const e=document.querySelector(s);if(e){e.style.animation=off?'none':'';e.style.opacity=off?'1':''}})}
+function toggleGlowAnim(el){el.classList.toggle('on');const g=document.querySelector('.hero-glow');g.style.animation=el.classList.contains('on')?'glowPulse 4s ease-in-out infinite':'none'}
+function toggleMarquee(el){el.classList.toggle('on');const t=document.querySelector('.marquee-track');t.style.animation=el.classList.contains('on')?'marquee 30s linear infinite':'none'}
+
+// ── CURSOR STYLE ──
+function setCursorStyle(v){
+  document.body.classList.remove('cursor-minimal','cursor-dot','cursor-off');
+  if(v!=='full')document.body.classList.add('cursor-'+v);
+  if(v==='off')document.body.style.cursor='auto';
+  else document.body.style.cursor='none';
+}
+function setCursorColor(c){
+  document.getElementById('cur-dot').style.background=c;
+  document.getElementById('cur-ring').style.borderColor=c.replace(')',',0.45)').replace('rgb','rgba');
+  document.querySelectorAll('.trail-dot').forEach(d=>d.style.background=c);
+}
+
+// ── CARD STYLE ──
+function setCardStyle(v){
+  document.body.classList.remove('card-hover-lift','card-flat');
+  if(v==='lift')document.body.classList.add('card-hover-lift');
+  else if(v==='flat')document.body.classList.add('card-flat');
+}
+
+// ── WATERMARK ──
+function toggleWatermark(el){el.classList.toggle('on');document.getElementById('watermark').style.display=el.classList.contains('on')?'flex':'none'}
+function setWatermarkOpacity(v){document.querySelector('#watermark span').style.color=`rgba(42,127,98,${v/100})`}
+
+// ── SECTION TOGGLES ──
+function toggleSection(id,el){el.classList.toggle('on');const sec=document.getElementById(id);if(sec)sec.style.display=el.classList.contains('on')?'':'none'}
+function toggleEl(id,el){el.classList.toggle('on');const e=document.getElementById(id)||document.querySelector('.'+id);if(e)e.style.display=el.classList.contains('on')?'':'none'}
+
+// ── SECTION PADDING ──
+function setSectionPadding(v){document.querySelectorAll('.wrap').forEach(w=>w.style.padding=v)}
+
+// ── SAVE ──
+function saveHTML(){
+  // Remove editor UI from saved output
+  const ed=document.getElementById('editor');const fab=document.getElementById('edit-fab');
+  const edDisplay=ed.style.display;const fabDisplay=fab.style.display;
+  ed.style.display='none';fab.style.display='none';
+  const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  ed.style.display=edDisplay;fab.style.display=fabDisplay;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='veerendra-sai-portfolio.html';a.click();URL.revokeObjectURL(a.href);
+}
+
+// ── RESET ──
+function resetAll(){if(confirm('Reset all changes to default?'))location.reload()}
+</script>
+
+
+</body></html>
